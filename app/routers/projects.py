@@ -24,3 +24,12 @@ def get_project_file(project_id: str, file_path: str):
     if content is None:
         raise HTTPException(status_code=404, detail=f"File '{file_path}' not found in project '{project_id}'")
     return PlainTextResponse(content)
+
+@router.get("/projects/{project_id}/history")
+def get_project_history(project_id: str):
+    return project_store.get_prompt_history(project_id)
+
+
+@router.get("/projects/{project_id}/versions")
+def get_project_versions(project_id: str):
+    return project_store.list_versions(project_id)

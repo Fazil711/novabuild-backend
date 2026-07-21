@@ -80,28 +80,48 @@ export default function {entity.name}Page() {{
 }}
 """
 
+def _entity_filename(entity: EntitySchema) -> str:
+    return f"pages/{entity.plural.lower()}.tsx"
 
-def generate_project_files(plan: AppPlan, project_id: str) -> dict:
-    base_dir = os.path.join(GENERATED_ROOT, project_id)
-    pages_dir = os.path.join(base_dir, "pages")
-    os.makedirs(pages_dir, exist_ok=True)
 
-    # plan.json
+def write_entity_page(base_dir: str, entity: EntitySchema) -> str:
+    filename = _entity_filename(entity)
+    path = os.path.join(base_dir, filename)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        f.write(_generate_entity_page(entity))
+    return filename
+
+
+def remove_entity_page(base_dir: str, entity_plural: str) -> str:
+    filename = f"pages/{entity_plural.lower()}.tsx"
+    path = os.path.join(base_dir, filename)
+    if os.path.isfile(path):
+        os.remove(path)
+    return filename
+
+
+def write_plan_json(base_dir: str, plan: AppPlan):
     with open(os.path.join(base_dir, "plan.json"), "w") as f:
         f.write(plan.model_dump_json(indent=2))
 
-    # schema.sql
+
+def write_schema_sql(base_dir: str, plan: AppPlan) -> str:
     sql = generate_sql(plan)
     with open(os.path.join(base_dir, "schema.sql"), "w") as f:
         f.write(sql)
+    return sql
 
-    # one page per entity
+
+def generate_project_files(plan: AppPlan, project_id: str) -> dict:
+    base_dir = os.path.join(GENERATED_ROOT, project_id)
+    os.makedirs(os.path.join(base_dir, "pages"), exist_ok=True)
+
+    write_plan_json(base_dir, plan)
+    write_schema_sql(base_dir, plan)
+
     files = ["plan.json", "schema.sql"]
     for entity in plan.entities:
-        content = _generate_entity_page(entity)
-        filename = f"pages/{entity.plural.lower()}.tsx"
-        with open(os.path.join(base_dir, filename), "w") as f:
-            f.write(content)
-        files.append(filename)
+        files.append(write_entity_page(base_dir, entity))
 
     return {"project_id": project_id, "dir": base_dir, "files": files}

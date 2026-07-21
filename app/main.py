@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import plan, build, projects 
+from app.routers import plan, build, projects, iterate 
 
 app = FastAPI(title="NovaBuild Backend")
 
@@ -15,6 +15,7 @@ app.add_middleware(
 app.include_router(plan.router, prefix="/api", tags=["plan"])
 app.include_router(build.router, prefix="/api", tags=["build"])
 app.include_router(projects.router, prefix="/api", tags=["projects"])  
+app.include_router(iterate.router, prefix="/api", tags=["iterate"])
 
 @app.get("/health")
 def health():

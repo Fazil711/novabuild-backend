@@ -22,7 +22,6 @@ class AppPlan(BaseModel):
     entities: List[EntitySchema] = Field(..., min_length=1, max_length=4)
     features: List[str] = []
 
-
 class PromptRequest(BaseModel):
     prompt: str
 
@@ -42,4 +41,39 @@ class ProjectSummary(BaseModel):
 class ProjectDetail(BaseModel):
     project_id: str
     plan: AppPlan
-    files: dict[str, str]  # filename -> file content
+    files: dict[str, str]  
+
+# ---- Iteration engine ----
+
+class PlanDiffOp(BaseModel):
+    """A single, targeted change to an existing AppPlan.
+    Only the fields relevant to `op` are populated."""
+    op: Literal[
+        "add_entity", "remove_entity", "modify_entity",
+        "add_feature", "remove_feature", "update_meta",
+    ]
+    entity: Optional[EntitySchema] = None       # add_entity / modify_entity
+    entity_name: Optional[str] = None           # remove_entity / modify_entity target
+    feature: Optional[str] = None               # add_feature / remove_feature
+    app_name: Optional[str] = None              # update_meta
+    description: Optional[str] = None           # update_meta
+
+
+class IterateRequest(BaseModel):
+    instruction: str
+
+
+class IterateResponse(BaseModel):
+    project_id: str
+    version: int
+    plan: AppPlan
+    operations: List[PlanDiffOp]
+    changed_files: List[str]
+    removed_files: List[str]
+
+
+class PromptHistoryEntry(BaseModel):
+    version: int
+    prompt: str
+    timestamp: str
+    operations: List[PlanDiffOp] = []
