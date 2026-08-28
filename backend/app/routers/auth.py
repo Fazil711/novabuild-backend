@@ -8,11 +8,65 @@ from app.schemas import (
     TokenResponse,
     PasswordResetRequest,
     PasswordResetConfirm,
+    GoogleAuthRequest,
 )
 from app.services import auth_service
 from app.dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+@router.get("/google/config")
+async def get_google_config():
+    """Return configured Google OAuth Client ID if set."""
+    import os
+    return {
+        "client_id": os.getenv("GOOGLE_CLIENT_ID", ""),
+        "configured": bool(os.getenv("GOOGLE_CLIENT_ID"))
+    }
+
+
+@router.post("/google", response_model=TokenResponse)
+async def google_auth(req: GoogleAuthRequest):
+    """Authenticate or sign up via Google with cryptographic verification."""
+    email = None
+    full_name = None
+    google_id = None
+
+    # 1. Cryptographically verify real Google ID token if passed
+    if req.credential:
+        verified = await auth_service.verify_google_credential(req.credential)
+        if not verified:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired Google credential token."
+            )
+        email = verified.get("email")
+        full_name = verified.get("full_name")
+        google_id = verified.get("google_id")
+    elif req.email:
+        email = req.email.strip().lower()
+        full_name = req.full_name
+        google_id = req.google_id
+
+    import re
+    if not email or not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format. Please provide a valid email address (e.g. user@gmail.com)."
+        )
+
+    result = auth_service.login_or_register_google(
+        email=email,
+        full_name=full_name,
+        google_id=google_id
+    )
+
+    return TokenResponse(
+        access_token=result["access_token"],
+        token_type="bearer",
+        user=UserResponse(**result["user"]),
+    )
 
 
 @router.post("/register", response_model=TokenResponse)

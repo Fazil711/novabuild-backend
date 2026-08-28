@@ -42,6 +42,13 @@ class UserUpdateRequest(BaseModel):
     email: Optional[str] = None
 
 
+class GoogleAuthRequest(BaseModel):
+    credential: Optional[str] = None
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    google_id: Optional[str] = None
+
+
 # ---- Blueprint & Plan Schemas ----
 
 class NavItem(BaseModel):
@@ -156,3 +163,96 @@ class PromptHistoryEntry(BaseModel):
     prompt: str
     timestamp: str
     operations: List[PlanDiffOp] = []
+
+
+# ---- Conversational Discovery & Confidence Schemas ----
+
+class DiscoveryQuestion(BaseModel):
+    id: str
+    question: str
+    category: Literal["business", "users", "workflow", "data", "features", "design"] = "business"
+    type: Literal["text", "single_choice", "multi_choice"] = "text"
+    options: Optional[List[str]] = None
+    context_hint: Optional[str] = None
+
+
+class DiscoveryAnswer(BaseModel):
+    question_id: str
+    answer: str
+
+
+class DiscoveryStartRequest(BaseModel):
+    prompt: str
+
+
+class DiscoveryAnswerRequest(BaseModel):
+    answers: List[DiscoveryAnswer]
+
+
+class ConfidenceScore(BaseModel):
+    score: int                                      # 0 to 100
+    summary: str                                    # "Here's what I understood..."
+    breakdown: dict[str, int] = {}                  # e.g., {"business": 95, "workflow": 90, "data": 88}
+    status: Literal["ready_to_build", "needs_clarification"] = "ready_to_build"
+    follow_up_questions: Optional[List[DiscoveryQuestion]] = None
+
+
+class DiscoverySession(BaseModel):
+    session_id: str
+    prompt: str
+    questions: List[DiscoveryQuestion]
+    answers: dict[str, str] = {}
+    confidence: Optional[ConfidenceScore] = None
+    blueprint: Optional[AppPlan] = None
+    created_at: str
+
+
+# ---- Cloud Deployment Schemas ----
+
+class DeployRequest(BaseModel):
+    provider: Literal["vercel", "netlify", "mock"] = "vercel"
+    project_name: Optional[str] = None
+    auth_token: Optional[str] = None
+    env_vars: Optional[dict[str, str]] = None
+
+
+class DeployLogEntry(BaseModel):
+    step: str
+    percent: int
+    message: str
+    status: Literal["building", "ready", "failed"] = "building"
+    timestamp: str
+
+
+class DeployResult(BaseModel):
+    deployment_id: str
+    project_id: str
+    provider: str
+    url: str
+    status: str
+    logs: List[DeployLogEntry] = []
+    created_at: str
+
+
+# ---- Multi-Modal Reference Ingestion Schemas ----
+
+class ReferenceItem(BaseModel):
+    id: str
+    type: Literal["image", "pdf", "figma", "url"]
+    filename: Optional[str] = None
+    url: Optional[str] = None
+    extracted_text: Optional[str] = None
+    summary: Optional[str] = None
+    detected_entities: List[str] = []
+    created_at: str
+
+
+class ReferenceLinkRequest(BaseModel):
+    url: str
+    type: Literal["figma", "url"] = "url"
+
+
+class ReferenceUploadResponse(BaseModel):
+    reference: ReferenceItem
+    message: str
+

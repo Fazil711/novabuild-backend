@@ -11,7 +11,9 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))  # 24 hours
 
 DATA_DIR = os.getenv("DATA_DIR", os.path.join(os.getcwd(), "data"))
+GENERATED_ROOT = os.getenv("GENERATED_ROOT", os.path.join(os.getcwd(), "generated-apps"))
 os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(GENERATED_ROOT, exist_ok=True)
 
 if not OPENROUTER_API_KEY:
     raise RuntimeError("Missing OPENROUTER_API_KEY in .env")

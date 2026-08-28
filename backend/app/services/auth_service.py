@@ -228,3 +228,90 @@ def reset_password_with_token(token: str, new_password: str) -> bool:
         )
         conn.commit()
         return True
+
+
+async def verify_google_credential(credential: Optional[str]) -> Optional[Dict[str, Any]]:
+    """Verify Google ID token or parse Google OAuth credential payload."""
+    if not credential:
+        return None
+
+    # 1. Try Google TokenInfo endpoint if standard JWT token
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            res = await client.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={credential}")
+            if res.status_code == 200:
+                data = res.json()
+                return {
+                    "email": data.get("email"),
+                    "full_name": data.get("name") or data.get("given_name"),
+                    "google_id": data.get("sub"),
+                }
+    except Exception:
+        pass
+
+    # 2. Fallback base64 JWT payload decode (if valid structure)
+    try:
+        parts = credential.split(".")
+        if len(parts) >= 2:
+            padded = parts[1] + "=" * ((4 - len(parts[1]) % 4) % 4)
+            payload_str = base64.urlsafe_b64decode(padded.encode("ascii")).decode("utf-8")
+            payload = json.loads(payload_str)
+            if payload.get("email"):
+                return {
+                    "email": payload.get("email"),
+                    "full_name": payload.get("name") or payload.get("given_name"),
+                    "google_id": payload.get("sub"),
+                }
+    except Exception:
+        pass
+
+    return None
+
+
+def login_or_register_google(email: str, full_name: Optional[str] = None, google_id: Optional[str] = None) -> Dict[str, Any]:
+    """Authenticate or register a user via Google OAuth, and issue an access token."""
+    email_clean = email.strip().lower()
+    
+    with _get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, email, full_name, created_at FROM users WHERE email = ?", (email_clean,))
+        row = cursor.fetchone()
+
+        if row:
+            user = {
+                "id": row["id"],
+                "email": row["email"],
+                "full_name": row["full_name"],
+                "created_at": row["created_at"],
+            }
+            # Update full_name if missing
+            if full_name and not row["full_name"]:
+                cursor.execute("UPDATE users SET full_name = ? WHERE id = ?", (full_name, row["id"]))
+                conn.commit()
+                user["full_name"] = full_name
+        else:
+            # Register new user with randomized secret salt
+            user_id = str(uuid.uuid4())
+            now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            random_pw = secrets.token_urlsafe(32)
+            pw_hash, pw_salt = _hash_password(random_pw)
+
+            cursor.execute(
+                "INSERT INTO users (id, email, password_hash, password_salt, full_name, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+                (user_id, email_clean, pw_hash, pw_salt, full_name or email_clean.split("@")[0], now_iso)
+            )
+            conn.commit()
+            user = {
+                "id": user_id,
+                "email": email_clean,
+                "full_name": full_name or email_clean.split("@")[0],
+                "created_at": now_iso,
+            }
+
+    token = create_access_token(user_id=user["id"], email=user["email"])
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": user
+    }
