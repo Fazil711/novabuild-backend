@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: novabuild-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - novabuild-data:/app/data
+      - novabuild-generated:/app/generated-apps
+    networks:
+      - novabuild-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: novabuild-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - novabuild-net
+
+volumes:
+  novabuild-data:
+  novabuild-generated:
+
+networks:
+  novabuild-net:
+    driver: bridge

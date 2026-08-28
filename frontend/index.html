@@ -606,8 +606,13 @@
 
   <!-- SELF-CONTAINED APPLICATION LOGIC WITH DEPLOYMENT & REFERENCES -->
   <script>
-    const API_BASE = "http://localhost:8000/api";
-    const BACKEND_ROOT = "http://localhost:8000";
+    const host = window.location.hostname || "localhost";
+    const API_BASE = (window.location.protocol.startsWith("http") && window.location.port === "3000")
+      ? `${window.location.protocol}//${host}:8000/api`
+      : (window.location.protocol.startsWith("http") ? `${window.location.origin}/api` : "http://localhost:8000/api");
+    const BACKEND_ROOT = (window.location.protocol.startsWith("http") && window.location.port === "3000")
+      ? `${window.location.protocol}//${host}:8000`
+      : (window.location.protocol.startsWith("http") ? window.location.origin : "http://localhost:8000");
 
     // Application State
     let currentPlan = null;
