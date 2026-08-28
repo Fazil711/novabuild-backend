@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NovaBuild — AI Fullstack Studio</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
+
+    /* Glass Panels */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
+    }
+
+    /* Pulse Bar */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
+    }
+    .pulse-bar { animation: pulse-glow 2s infinite ease-in-out; }
+
+    /* Code Line Numbers */
+    .line-numbers { counter-reset: line; }
+    .line-numbers > div { counter-increment: line; position: relative; padding-left: 3.5rem; }
+    .line-numbers > div::before {
+      content: counter(line);
+      position: absolute;
+      left: 0;
+      width: 2.5rem;
+      text-align: right;
+      color: #475569;
+      user-select: none;
+    }
+
+    /* Toast Animation */
+    @keyframes slide-in-up {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .toast-animate { animation: slide-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 bg-slate-950/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo & Status -->
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('studio')">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white font-black text-lg">
+            N
+          </div>
+          <div>
+            <h1 class="text-base font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">
+              NovaBuild
+            </h1>
+            <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-indigo-400 block -mt-1">Fullstack Studio</span>
+          </div>
+        </div>
+
+        <div id="backend-status-badge" class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] bg-slate-900 border border-slate-800 cursor-pointer" onclick="checkBackendHealth(true)">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <span class="text-gray-400">Checking Backend...</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-slate-800">
+        <button id="tab-studio" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/20 text-indigo-400 border border-indigo-500/50" onclick="switchView('studio')">
+          ✨ Studio
+        </button>
+        <button id="tab-projects" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white" onclick="switchView('projects')">
+          📂 Projects
+        </button>
+        <button id="tab-code" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white" onclick="switchView('code')">
+          💻 Code
+        </button>
+        <button id="tab-iterate" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white" onclick="switchView('iterate')">
+          ⚡ Iterate
+        </button>
+      </nav>
+
+      <!-- Auth Action Button -->
+      <div class="flex items-center gap-3">
+        <button id="auth-toggle-btn" onclick="openAuthModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-bold transition-colors">
+          <span>Sign In</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- VIEW 1: PROMPT & BLUEPRINT STUDIO -->
+    <section id="view-studio" class="view-section space-y-8">
+      <!-- Hero Banner -->
+      <div class="text-center max-w-3xl mx-auto pt-4 pb-2 space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+          <span>⚡ Conversational AI App Builder</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          Turn your idea into a <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">production Next.js App</span>
+        </h2>
+        <p class="text-sm text-gray-400">
+          NovaBuild analyzes your business domain, synthesizes database schemas with Supabase RLS, and generates full-stack Next.js 14 code with interactive CRUD.
+        </p>
+      </div>
+
+      <!-- Prompt Input Box -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <label for="prompt-input" class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+              <span>✍️ Describe Your Application Idea</span>
+            </label>
+            <span class="text-[11px] text-gray-500">Supports complex multi-entity requirements</span>
+          </div>
+
+          <textarea
+            id="prompt-input"
+            rows="3"
+            placeholder="e.g., Build a B2B SaaS CRM with leads, customer pipelines, interaction notes, and sales stages..."
+            class="w-full rounded-2xl bg-slate-900/90 border border-slate-700/80 p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-inner"
+          ></textarea>
+
+          <!-- Quick Preset Chips -->
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <span class="text-xs text-gray-500 font-semibold">Try preset:</span>
+            <button onclick="applyPreset('Build a high-end Real Estate Property Marketplace with properties, agents, and viewing requests')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+              🏡 Real Estate Marketplace
+            </button>
+            <button onclick="applyPreset('Build an Inventory Management System with items, suppliers, purchase orders, and stock alerts')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+              📦 Inventory Hub
+            </button>
+            <button onclick="applyPreset('Build a SaaS Bug & Issue Tracker with projects, tickets, assignees, and sprint tags')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+              🐞 Issue Tracker
+            </button>
+            <button onclick="applyPreset('Build a Fitness Coaching Portal with workout routines, clients, meal plans, and progress check-ins')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+              💪 Fitness Portal
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between pt-3">
+            <button onclick="loadSampleDemoBlueprint()" class="text-xs text-indigo-400 hover:text-indigo-300 underline font-medium">
+              💡 Or load sample demo blueprint
+            </button>
+            <button id="generate-plan-btn" onclick="handleGenerateBlueprint()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2">
+              <span>✨ Generate Blueprint</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Real-Time SSE Progress Bar -->
+        <div id="stream-progress-container" class="hidden mt-6 pt-6 border-t border-slate-800/80 space-y-2">
+          <div class="flex justify-between text-xs font-semibold">
+            <span id="stream-progress-text" class="text-indigo-300">Initializing...</span>
+            <span id="stream-percent-text" class="text-gray-400">0%</span>
+          </div>
+          <div class="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden">
+            <div id="stream-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300 pulse-bar" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blueprint Container -->
+      <div id="blueprint-container" class="pt-2"></div>
+    </section>
+
+    <!-- VIEW 2: MY PROJECTS DASHBOARD -->
+    <section id="view-projects" class="view-section hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-black text-white">Your Generated Projects</h2>
+          <p class="text-xs text-gray-400 mt-1">Browse, inspect, and export your generated applications</p>
+        </div>
+        <button onclick="switchView('studio')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md">
+          + New Application
+        </button>
+      </div>
+
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+    <!-- VIEW 3: CODE STUDIO & EXPLORER -->
+    <section id="view-code" class="view-section hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-black text-white">Code Explorer</h2>
+          <p class="text-xs text-gray-400 mt-0.5">Inspect full-stack Next.js 14 and Supabase PostgreSQL code files</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="copy-code-btn" onclick="copyActiveCode()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors">
+            📋 Copy File
+          </button>
+          <a id="download-zip-btn" href="#" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-md">
+            <span>📦 Download ZIP</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 min-h-[600px]">
+        <!-- File Tree Sidebar -->
+        <div class="glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col">
+          <div class="pb-3 mb-3 border-b border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Project Files</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-indigo-400 font-mono">Next.js 14</span>
+          </div>
+          <div id="file-tree-container" class="flex-1 overflow-y-auto space-y-1">
+            <!-- Files populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Code Content Area -->
+        <div class="md:col-span-3 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden">
+          <div class="px-4 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+              <span id="active-filename" class="text-xs font-mono font-medium text-slate-300 ml-2 truncate">app/layout.tsx</span>
+            </div>
+          </div>
+          <div id="code-view-container" class="flex-1 p-4 overflow-auto bg-slate-950/80 min-h-[500px]">
+            <!-- Code populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: ITERATION STUDIO -->
+    <section id="view-iterate" class="view-section hidden space-y-6">
+      <div>
+        <h2 class="text-2xl font-black text-white">Project Iteration Studio</h2>
+        <p class="text-xs text-gray-400 mt-1">Make incremental changes to your project with conversational instructions</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: Instruction Form -->
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Select Target Project</label>
+            <select id="iterate-project-select" class="w-full rounded-xl bg-slate-900 border border-slate-700 p-3 text-xs text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Modification Instruction</label>
+            <textarea
+              id="iterate-prompt-input"
+              rows="4"
+              placeholder="e.g., Add a priority rating (1-5) and notes field to the tasks entity..."
+              class="w-full rounded-xl bg-slate-900 border border-slate-700 p-3 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            ></textarea>
+          </div>
+
+          <button id="iterate-submit-btn" onclick="handleIterateSubmit()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition-colors flex items-center justify-center gap-2">
+            <span>Apply Update</span>
+          </button>
+        </div>
+
+        <!-- Right: Diff & Results Viewer -->
+        <div class="lg:col-span-2 glass-panel rounded-2xl p-6 border border-slate-800">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Iteration Diff & Version Log</h3>
+          <div id="iterate-diff-output" class="min-h-[250px] flex items-center justify-center text-xs text-gray-500">
+            Submit a modification above to see applied operations and file diffs.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-panel rounded-3xl max-w-md w-full p-8 border border-slate-700 shadow-2xl relative">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl">&times;</button>
+      
+      <h3 id="auth-modal-title" class="text-xl font-bold text-white text-center mb-1">Sign In to NovaBuild</h3>
+      <p class="text-xs text-gray-400 text-center mb-6">Manage and isolate your generated applications</p>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div id="auth-fullname-container" class="hidden">
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
+          <input
+            type="text"
+            id="auth-fullname"
+            placeholder="John Doe"
+            class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
+          <input
+            type="email"
+            id="auth-email"
+            required
+            placeholder="name@company.com"
+            class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Password</label>
+          <input
+            type="password"
+            id="auth-password"
+            required
+            minlength="6"
+            placeholder="••••••••"
+            class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          id="auth-submit-btn"
+          class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition-colors"
+        >
+          Sign In
+        </button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <a href="javascript:void(0)" onclick="toggleAuthMode()" id="auth-toggle-link" class="text-xs text-indigo-400 hover:underline font-medium">
+          Need an account? Sign Up
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm"></div>
+
+  <!-- SELF-CONTAINED APPLICATION LOGIC (Runs directly on file:// and http://) -->
+  <script>
+    // Configuration
+    const API_BASE = "http://localhost:8000/api";
+    const BACKEND_ROOT = "http://localhost:8000";
+
+    // Application State
+    let currentPlan = null;
+    let activeProjectId = "sample-estatehub";
+    let isSignUpMode = false;
+    let activeFileContent = "";
+    let mockProjectsStore = [];
+
+    // Sample Blueprint for instant demo
+    const SAMPLE_BLUEPRINT = {
+      app_name: "EstateHub",
+      type: "saas",
+      description: "A high-end luxury real estate marketplace connecting buyers, property dealers, and viewing agents.",
+      project_dna: {
+        business_name: "EstateHub Global",
+        industry: "Luxury Real Estate",
+        target_users: ["Brokers", "High-Net-Worth Buyers", "Property Owners"],
+        main_workflow: "Listing -> Inspection Scheduling -> Verification -> Deal Closing",
+        goals: ["Streamline luxury property tours", "Automate buyer-agent lead routing"]
+      },
+      entities: [
+        {
+          name: "Property",
+          plural: "Properties",
+          fields: [
+            { name: "title", type: "text", required: true },
+            { name: "price", type: "number", required: true },
+            { name: "city", type: "text", required: true },
+            { name: "property_type", type: "select", options: ["Villa", "Penthouse", "Mansion", "Apartment"] },
+            { name: "is_featured", type: "boolean" },
+            { name: "description", type: "textarea" }
+          ]
+        },
+        {
+          name: "Agent",
+          plural: "Agents",
+          fields: [
+            { name: "full_name", type: "text", required: true },
+            { name: "license_number", type: "text", required: true },
+            { name: "phone", type: "text" },
+            { name: "specialty", type: "select", options: ["Residential", "Commercial", "Luxury Penthouses"] }
+          ]
+        },
+        {
+          name: "ViewingRequest",
+          plural: "ViewingRequests",
+          fields: [
+            { name: "preferred_date", type: "date", required: true },
+            { name: "client_name", type: "text", required: true },
+            { name: "status", type: "select", options: ["Pending", "Confirmed", "Completed", "Cancelled"] },
+            { name: "notes", type: "textarea" }
+          ]
+        }
+      ],
+      features: [
+        "Interactive property search & price filtering",
+        "Agent directory and lead dispatching",
+        "Tour scheduling and booking calendar",
+        "Row Level Security (RLS) for buyers and agents"
+      ],
+      pages: [
+        { name: "Dashboard", path: "/", title: "EstateHub Overview", page_type: "dashboard" },
+        { name: "Properties", path: "/properties", title: "Luxury Properties", page_type: "crud_table", entity_ref: "Property" },
+        { name: "Agents", path: "/agents", title: "Certified Agents", page_type: "crud_table", entity_ref: "Agent" },
+        { name: "ViewingRequests", path: "/viewingrequests", title: "Tour Bookings", page_type: "crud_table", entity_ref: "ViewingRequest" }
+      ],
+      navigation: [
+        { label: "Dashboard", path: "/", icon: "LayoutDashboard" },
+        { label: "Properties", path: "/properties", icon: "Building" },
+        { label: "Agents", path: "/agents", icon: "Users" },
+        { label: "Viewing Requests", path: "/viewingrequests", icon: "Calendar" }
+      ],
+      auth_config: {
+        enabled: true,
+        roles: ["admin", "agent", "buyer"],
+        default_role: "buyer"
+      }
+    };
+
+    // Sample Files for Code Viewer
+    const SAMPLE_FILES = {
+      "package.json": JSON.stringify({
+        name: "estate-hub",
+        version: "0.1.0",
+        dependencies: {
+          "next": "^14.2.5",
+          "react": "^18.3.1",
+          "@supabase/supabase-js": "^2.45.0",
+          "tailwindcss": "^3.4.6",
+          "lucide-react": "^0.417.0"
+        }
+      }, null, 2),
+      "app/layout.tsx": `"use client";
+import React, { useState, useEffect } from "react";
+import "./globals.css";
+import { supabase } from "@/lib/supabase";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
+
+  return (
+    <html lang="en">
+      <body className="bg-slate-950 text-slate-100 min-h-screen flex">
+        <aside className="w-64 bg-slate-900 border-r border-slate-800 p-5 flex flex-col">
+          <h1 className="text-xl font-bold text-indigo-400">EstateHub</h1>
+          <nav className="mt-6 space-y-1">
+            <a href="/" className="block px-3 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">Dashboard</a>
+            <a href="/properties" className="block px-3 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">Properties</a>
+            <a href="/agents" className="block px-3 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">Agents</a>
+            <a href="/viewingrequests" className="block px-3 py-2 rounded text-sm text-slate-300 hover:bg-slate-800">Viewing Requests</a>
+          </nav>
+        </aside>
+        <main className="flex-1 p-8">{children}</main>
+      </body>
+    </html>
+  );
+}`,
+      "app/page.tsx": `"use client";
+import React from "react";
+
+export default function Dashboard() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-white">EstateHub Overview</h2>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="p-6 bg-slate-900 rounded-xl border border-slate-800">
+          <h3 className="font-bold text-lg text-indigo-400">Properties</h3>
+          <p className="text-sm text-slate-400 mt-1">Manage luxury property listings</p>
+        </div>
+      </div>
+    </div>
+  );
+}`,
+      "app/properties/page.tsx": `"use client";
+import React, { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+export default function PropertiesPage() {
+  const [items, setItems] = useState<any[]>([]);
+
+  async function load() {
+    const { data } = await supabase.from("properties").select("*").order("created_at", { ascending: false });
+    setItems(data || []);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-white mb-4">Properties</h1>
+      <table className="w-full text-left bg-slate-900 rounded-xl">
+        <thead><tr className="border-b border-slate-800 p-3"><th>Title</th><th>Price</th><th>City</th></tr></thead>
+        <tbody>
+          {items.map(item => (
+            <tr key={item.id} className="border-b border-slate-800 p-3">
+              <td>{item.title}</td><td>{item.price}</td><td>{item.city}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}`,
+      "schema.sql": `-- Supabase PostgreSQL Schema
+create table if not exists properties (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade not null,
+  created_at timestamptz default now() not null,
+  title text not null,
+  price numeric not null,
+  city text not null,
+  property_type text,
+  is_featured boolean,
+  description text
+);
+
+alter table properties enable row level security;
+create policy "properties_select_policy" on properties for select using (auth.uid() = user_id);
+create policy "properties_insert_policy" on properties for insert with check (auth.uid() = user_id);`,
+      "lib/supabase.ts": `import { createClient } from "@supabase/supabase-js";
+
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "https://your-project.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "your-anon-key"
+);`
+    };
+
+    // ---- INITIALIZATION ----
+    window.addEventListener("DOMContentLoaded", () => {
+      checkBackendHealth();
+      renderBlueprint(SAMPLE_BLUEPRINT);
+      loadSampleCodeViewer();
+      initAuthStatus();
+    });
+
+    // ---- TAB SWITCHING ----
+    function switchView(viewName) {
+      const tabs = ["studio", "projects", "code", "iterate"];
+      tabs.forEach(name => {
+        const tabBtn = document.getElementById(`tab-${name}`);
+        const viewSec = document.getElementById(`view-${name}`);
+        if (name === viewName) {
+          if (tabBtn) {
+            tabBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/20 text-indigo-400 border border-indigo-500/50";
+          }
+          if (viewSec) viewSec.classList.remove("hidden");
+        } else {
+          if (tabBtn) {
+            tabBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white";
+          }
+          if (viewSec) viewSec.classList.add("hidden");
+        }
+      });
+
+      if (viewName === "projects") {
+        fetchProjectsList();
+      } else if (viewName === "iterate") {
+        populateIterateDropdown();
+      }
+    }
+
+    // ---- HEALTH CHECK ----
+    async function checkBackendHealth(userTriggered = false) {
+      const badge = document.getElementById("backend-status-badge");
+      try {
+        const res = await fetch(`${BACKEND_ROOT}/health`, { method: "GET" });
+        if (res.ok) {
+          badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span class="text-emerald-400 font-medium">Backend Live (:8000)</span>`;
+          if (userTriggered) showToast("Backend connection is healthy!", "success");
+          return true;
+        }
+      } catch (err) {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> <span class="text-rose-400 font-medium">Backend Offline (Click to retry)</span>`;
+        if (userTriggered) showToast("Backend not reachable at http://localhost:8000. Ensure uvicorn is running.", "error");
+        return false;
+      }
+    }
+
+    // ---- TOAST MESSAGES ----
+    function showToast(msg, type = "info") {
+      const container = document.getElementById("toast-container");
+      if (!container) return;
+      const el = document.createElement("div");
+      const bg = type === "error" ? "bg-red-600 text-white" : type === "success" ? "bg-emerald-600 text-white" : "bg-indigo-600 text-white";
+      el.className = `p-4 rounded-xl shadow-2xl flex items-center gap-3 text-xs font-semibold toast-animate ${bg}`;
+      el.innerHTML = `<span>✦</span> <span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+
+    // ---- PRESETS ----
+    function applyPreset(text) {
+      const input = document.getElementById("prompt-input");
+      if (input) {
+        input.value = text;
+        input.focus();
+        showToast("Preset applied. Click 'Generate Blueprint' to synthesize.", "info");
+      }
+    }
+
+    function loadSampleDemoBlueprint() {
+      currentPlan = SAMPLE_BLUEPRINT;
+      renderBlueprint(SAMPLE_BLUEPRINT);
+      showToast("Loaded sample 'EstateHub' blueprint!", "success");
+    }
+
+    // ---- BLUEPRINT GENERATION ----
+    async function handleGenerateBlueprint() {
+      const input = document.getElementById("prompt-input");
+      const prompt = input ? input.value.trim() : "";
+      if (!prompt) {
+        showToast("Please enter an application description first.", "error");
+        return;
+      }
+
+      const btn = document.getElementById("generate-plan-btn");
+      const progressContainer = document.getElementById("stream-progress-container");
+      const progressBar = document.getElementById("stream-progress-bar");
+      const progressText = document.getElementById("stream-progress-text");
+      const percentText = document.getElementById("stream-percent-text");
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ Synthesizing Blueprint...</span>`;
+      progressContainer.classList.remove("hidden");
+      progressBar.style.width = "10%";
+      progressText.textContent = "Connecting to Blueprint Engine...";
+      percentText.textContent = "10%";
+
+      // Try Live API first
+      try {
+        const token = localStorage.getItem("novabuild_token");
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch(`${API_BASE}/plan/stream`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({ prompt: prompt })
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder("utf-8");
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n\n");
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              try {
+                const event = JSON.parse(line.replace("data: ", ""));
+                if (event.percent) {
+                  progressBar.style.width = `${event.percent}%`;
+                  percentText.textContent = `${event.percent}%`;
+                }
+                if (event.message) progressText.textContent = event.message;
+                if (event.blueprint) {
+                  currentPlan = event.blueprint;
+                  renderBlueprint(event.blueprint);
+                  showToast("Blueprint synthesized live!", "success");
+                }
+              } catch (e) {}
+            }
+          }
+        }
+      } catch (err) {
+        // Fallback simulation if backend offline
+        console.warn("Live generation error, falling back to simulated generation:", err);
+        progressText.textContent = "Analyzing domain and architecture (Demo Engine)...";
+        progressBar.style.width = "40%";
+        percentText.textContent = "40%";
+        
+        setTimeout(() => {
+          progressBar.style.width = "75%";
+          progressText.textContent = "Synthesizing entities, pages, and Supabase RLS schemas...";
+          percentText.textContent = "75%";
+          
+          setTimeout(() => {
+            progressBar.style.width = "100%";
+            progressText.textContent = "Blueprint synthesized successfully!";
+            percentText.textContent = "100%";
+            currentPlan = { ...SAMPLE_BLUEPRINT, description: prompt };
+            renderBlueprint(currentPlan);
+            showToast("Blueprint generated (Demo Mode). Start backend for LLM generation.", "info");
+          }, 600);
+        }, 600);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>✨ Generate Blueprint</span>`;
+      }
+    }
+
+    // ---- RENDER BLUEPRINT ----
+    function renderBlueprint(plan) {
+      const container = document.getElementById("blueprint-container");
+      if (!container || !plan) return;
+
+      const { app_name, type, description, project_dna, entities = [], features = [], pages = [], auth_config } = plan;
+
+      let dnaHtml = "";
+      if (project_dna) {
+        const users = (project_dna.target_users || []).map(u => `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-900/40 text-indigo-300 border border-indigo-700/50">${u}</span>`).join(" ");
+        const goals = (project_dna.goals || []).map(g => `<li class="text-xs text-gray-300 flex items-center gap-1.5"><span class="text-indigo-400">✦</span> ${g}</li>`).join("");
+
+        dnaHtml = `
+          <div class="glass-card rounded-2xl p-5 border border-indigo-500/20 bg-gradient-to-br from-indigo-950/40 via-slate-900/50 to-slate-900/30">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400 text-sm">🧬</span>
+              <h3 class="text-sm font-bold uppercase tracking-wider text-indigo-300">Project DNA & Business Profile</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div>
+                <p class="text-xs text-gray-400">Business / Industry</p>
+                <p class="font-semibold text-white mt-0.5">${project_dna.business_name || app_name} <span class="text-xs font-normal text-indigo-300">(${project_dna.industry || type})</span></p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 mb-1">Target Users</p>
+                <div class="flex flex-wrap gap-1.5">${users || '<span class="text-gray-500 text-xs">General Users</span>'}</div>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400">Primary Workflow</p>
+                <p class="text-xs text-gray-300 mt-0.5">${project_dna.main_workflow || 'Standard CRUD with Auth'}</p>
+              </div>
+            </div>
+            ${goals ? `<div class="mt-3 pt-3 border-t border-slate-800"><p class="text-xs text-gray-400 mb-1">Core Goals:</p><ul class="grid grid-cols-1 md:grid-cols-2 gap-1">${goals}</ul></div>` : ""}
+          </div>
+        `;
+      }
+
+      const entitiesHtml = entities.map(entity => {
+        const fieldsHtml = (entity.fields || []).map(f => {
+          const typeColors = {
+            text: "bg-blue-900/40 text-blue-300 border-blue-800",
+            number: "bg-amber-900/40 text-amber-300 border-amber-800",
+            boolean: "bg-emerald-900/40 text-emerald-300 border-emerald-800",
+            date: "bg-purple-900/40 text-purple-300 border-purple-800",
+            textarea: "bg-cyan-900/40 text-cyan-300 border-cyan-800",
+            select: "bg-rose-900/40 text-rose-300 border-rose-800"
+          };
+          const badgeClass = typeColors[f.type] || "bg-gray-800 text-gray-300 border-gray-700";
+          const requiredBadge = f.required ? `<span class="text-xs text-red-400 font-bold ml-1">*</span>` : "";
+          const optionsHtml = f.options && f.options.length ? `<span class="text-[10px] text-gray-400 block mt-0.5">options: [${f.options.join(", ")}]</span>` : "";
+
+          return `
+            <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
+              <td class="py-2 px-3 font-mono text-xs text-indigo-300 font-medium">${f.name}${requiredBadge}</td>
+              <td class="py-2 px-3">
+                <span class="px-2 py-0.5 rounded text-[11px] font-mono border ${badgeClass}">${f.type}</span>
+                ${optionsHtml}
+              </td>
+              <td class="py-2 px-3 text-xs text-gray-400">${f.required ? 'Required' : 'Optional'}</td>
+            </tr>
+          `;
+        }).join("");
+
+        return `
+          <div class="glass-card rounded-xl border border-slate-800 overflow-hidden">
+            <div class="p-3.5 bg-slate-800/60 border-b border-slate-700/50 flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                <h4 class="font-bold text-white text-sm">${entity.name}</h4>
+                <span class="text-xs text-gray-400 font-mono">(${entity.plural ? entity.plural.toLowerCase() : 'items'})</span>
+              </div>
+              <span class="text-xs text-gray-400">${(entity.fields || []).length} fields</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="text-[10px] uppercase font-bold text-gray-400 bg-slate-900/40 border-b border-slate-800">
+                    <th class="py-2 px-3">Field Name</th>
+                    <th class="py-2 px-3">Data Type</th>
+                    <th class="py-2 px-3">Constraint</th>
+                  </tr>
+                </thead>
+                <tbody>${fieldsHtml}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const pagesHtml = (pages || []).map(p => `
+        <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-white">${p.title || p.name}</p>
+            <p class="text-[11px] font-mono text-gray-400">${p.path}</p>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-slate-800 text-indigo-300 border border-indigo-900/50">${p.page_type || 'view'}</span>
+        </div>
+      `).join("");
+
+      const featuresHtml = (features || []).map(f => `
+        <li class="flex items-center gap-2 text-xs text-gray-300">
+          <span class="text-emerald-400 font-bold">✓</span> ${f}
+        </li>
+      `).join("");
+
+      container.innerHTML = `
+        <div class="space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-indigo-900/30 via-slate-900/80 to-slate-900 border border-indigo-500/30">
+            <div>
+              <div class="flex items-center gap-3">
+                <h2 class="text-2xl font-black text-white tracking-tight">${app_name}</h2>
+                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${type}</span>
+              </div>
+              <p class="text-sm text-gray-300 mt-1 max-w-2xl">${description}</p>
+            </div>
+            <button id="approve-build-btn" onclick="handleApproveBuild()" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+              <span>🚀 Approve & Generate Code</span>
+            </button>
+          </div>
+
+          ${dnaHtml}
+
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-3 flex items-center gap-2">
+              <span>📦 Database Entities & Relations</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-gray-400">${entities.length} tables</span>
+            </h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">${entitiesHtml}</div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card rounded-xl p-4 border border-slate-800">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-2">
+                <span>📱 UI Page Structure</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-indigo-400">${pages.length} pages</span>
+              </h4>
+              <div class="space-y-2">${pagesHtml}</div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 border border-slate-800 space-y-4">
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">⚡ Core Features</h4>
+                <ul class="space-y-1.5">${featuresHtml}</ul>
+              </div>
+              ${auth_config ? `
+                <div class="pt-3 border-t border-slate-800">
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">🔐 Auth & RBAC</h4>
+                  <p class="text-xs text-gray-300">Roles: <span class="font-mono text-indigo-300">${(auth_config.roles || []).join(", ")}</span> (Default: ${auth_config.default_role || 'buyer'})</p>
+                </div>
+              ` : ""}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- APPROVE & BUILD ----
+    async function handleApproveBuild() {
+      if (!currentPlan) return;
+      const btn = document.getElementById("approve-build-btn");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>⏳ Generating Next.js Codebase...</span>`;
+      }
+
+      try {
+        const token = localStorage.getItem("novabuild_token");
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch(`${API_BASE}/build`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({ plan: currentPlan })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          activeProjectId = data.project_id;
+          showToast(`App '${currentPlan.app_name}' generated successfully!`, "success");
+          switchView("code");
+          loadLiveCodeViewer(data.project_id);
+          return;
+        }
+      } catch (err) {
+        console.warn("Build API error, showing in code studio:", err);
+      }
+
+      // Demo fallback
+      showToast(`Generated scaffolding for '${currentPlan.app_name}'!`, "success");
+      switchView("code");
+      loadSampleCodeViewer();
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>🚀 Approve & Generate Code</span>`;
+      }
+    }
+
+    // ---- CODE VIEWER ----
+    function loadSampleCodeViewer() {
+      renderFileTree(Object.keys(SAMPLE_FILES), (file) => {
+        renderFileContent(file, SAMPLE_FILES[file]);
+      });
+      renderFileContent("app/layout.tsx", SAMPLE_FILES["app/layout.tsx"]);
+    }
+
+    async function loadLiveCodeViewer(projectId) {
+      const downloadBtn = document.getElementById("download-zip-btn");
+      if (downloadBtn) {
+        downloadBtn.href = `${API_BASE}/projects/${projectId}/download`;
+        downloadBtn.classList.remove("hidden");
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/projects/${projectId}`);
+        if (res.ok) {
+          const project = await res.json();
+          const files = Object.keys(project.files || {}).sort();
+          renderFileTree(files, async (file) => {
+            const code = project.files[file] || await (await fetch(`${API_BASE}/projects/${projectId}/files/${file}`)).text();
+            renderFileContent(file, code);
+          });
+          const defFile = files.find(f => f.includes("layout.tsx")) || files[0];
+          if (defFile) renderFileContent(defFile, project.files[defFile]);
+          return;
+        }
+      } catch (e) {}
+
+      loadSampleCodeViewer();
+    }
+
+    function renderFileTree(files, onSelect) {
+      const container = document.getElementById("file-tree-container");
+      if (!container) return;
+      container.innerHTML = "";
+
+      files.forEach((file, index) => {
+        let icon = "📄";
+        if (file.endsWith(".tsx") || file.endsWith(".ts")) icon = "⚛️";
+        else if (file.endsWith(".json")) icon = "📦";
+        else if (file.endsWith(".sql")) icon = "🗄️";
+        else if (file.endsWith(".css")) icon = "🎨";
+        else if (file.endsWith(".md")) icon = "📝";
+
+        const btn = document.createElement("button");
+        btn.className = `w-full text-left px-3 py-1.5 rounded-lg text-slate-300 hover:bg-slate-800/80 hover:text-white flex items-center gap-2 transition-colors text-xs font-mono ${index === 0 ? "bg-indigo-600/30 text-indigo-300 font-bold" : ""}`;
+        btn.innerHTML = `<span>${icon}</span> <span class="truncate">${file}</span>`;
+        btn.onclick = () => {
+          container.querySelectorAll("button").forEach(b => b.className = "w-full text-left px-3 py-1.5 rounded-lg text-slate-300 hover:bg-slate-800/80 hover:text-white flex items-center gap-2 transition-colors text-xs font-mono");
+          btn.className = "w-full text-left px-3 py-1.5 rounded-lg text-indigo-300 bg-indigo-600/30 font-bold flex items-center gap-2 transition-colors text-xs font-mono";
+          onSelect(file);
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function renderFileContent(filename, code) {
+      activeFileContent = code;
+      const nameEl = document.getElementById("active-filename");
+      const codeEl = document.getElementById("code-view-container");
+      if (nameEl) nameEl.textContent = filename;
+      if (codeEl) {
+        const lines = code.split("\n").map(l => {
+          const safe = l.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          return `<div>${safe || " "}</div>`;
+        }).join("");
+        codeEl.innerHTML = `<pre class="line-numbers text-slate-200"><code class="block font-mono text-xs">${lines}</code></pre>`;
+      }
+    }
+
+    function copyActiveCode() {
+      if (!activeFileContent) return;
+      navigator.clipboard.writeText(activeFileContent).then(() => {
+        const btn = document.getElementById("copy-code-btn");
+        if (btn) {
+          const orig = btn.innerHTML;
+          btn.innerHTML = "<span>✓ Copied!</span>";
+          setTimeout(() => btn.innerHTML = orig, 2000);
+        }
+        showToast("Code copied to clipboard!", "success");
+      });
+    }
+
+    // ---- PROJECTS LIST ----
+    async function fetchProjectsList() {
+      const container = document.getElementById("projects-grid");
+      if (!container) return;
+      container.innerHTML = `<div class="col-span-full p-8 text-center text-gray-500">Loading projects...</div>`;
+
+      try {
+        const token = localStorage.getItem("novabuild_token");
+        const headers = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch(`${API_BASE}/projects`, { headers });
+        if (res.ok) {
+          const list = await res.json();
+          if (list && list.length) {
+            renderProjectsGrid(list);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // Fallback mock projects
+      renderProjectsGrid([
+        {
+          project_id: "demo-estatehub-v1",
+          app_name: "EstateHub Luxury Real Estate",
+          type: "saas",
+          version: 1,
+          created_files: ["package.json", "app/layout.tsx", "app/properties/page.tsx", "schema.sql"]
+        },
+        {
+          project_id: "demo-inventory-v2",
+          app_name: "Warehouse Pro",
+          type: "dashboard",
+          version: 2,
+          created_files: ["package.json", "app/layout.tsx", "app/items/page.tsx", "schema.sql"]
+        }
+      ]);
+    }
+
+    function renderProjectsGrid(projects) {
+      const container = document.getElementById("projects-grid");
+      if (!container) return;
+
+      container.innerHTML = projects.map(p => `
+        <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between hover:border-indigo-500/40 transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${p.type}</span>
+              <span class="text-[11px] font-mono text-gray-400">v${p.version || 1}</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1 truncate">${p.app_name}</h3>
+            <p class="text-xs font-mono text-gray-500 mb-3 truncate">ID: ${p.project_id}</p>
+            <p class="text-xs text-gray-400 mb-4">${(p.created_files || []).length} generated files (Next.js 14 + SQL)</p>
+          </div>
+
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-800/80">
+            <button onclick="openProjectInCode('${p.project_id}')" class="flex-1 py-1.5 px-3 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white text-xs font-bold transition-colors">
+              Code View
+            </button>
+            <button onclick="openProjectInIterate('${p.project_id}')" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors">
+              Iterate
+            </button>
+            <a href="${API_BASE}/projects/${p.project_id}/download" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors" title="Download ZIP">
+              📦
+            </a>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function openProjectInCode(pid) {
+      activeProjectId = pid;
+      switchView("code");
+      loadLiveCodeViewer(pid);
+    }
+
+    function openProjectInIterate(pid) {
+      activeProjectId = pid;
+      switchView("iterate");
+    }
+
+    // ---- ITERATE ----
+    async function populateIterateDropdown() {
+      const select = document.getElementById("iterate-project-select");
+      if (!select) return;
+
+      select.innerHTML = `
+        <option value="demo-estatehub-v1">EstateHub (v1) - Luxury Real Estate</option>
+        <option value="demo-inventory-v2">Warehouse Pro (v2) - Inventory Management</option>
+      `;
+
+      try {
+        const res = await fetch(`${API_BASE}/projects`);
+        if (res.ok) {
+          const list = await res.json();
+          if (list && list.length) {
+            select.innerHTML = list.map(p => `
+              <option value="${p.project_id}" ${p.project_id === activeProjectId ? "selected" : ""}>
+                ${p.app_name} (v${p.version || 1}) - ${p.project_id.slice(0, 8)}
+              </option>
+            `).join("");
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function handleIterateSubmit() {
+      const select = document.getElementById("iterate-project-select");
+      const input = document.getElementById("iterate-prompt-input");
+      const btn = document.getElementById("iterate-submit-btn");
+      const output = document.getElementById("iterate-diff-output");
+
+      const pid = select ? select.value : "";
+      const instruction = input ? input.value.trim() : "";
+
+      if (!instruction) {
+        showToast("Please enter an update instruction.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ Applying Update...</span>`;
+      output.innerHTML = `<div class="p-6 text-center text-indigo-400">Synthesizing incremental diff and updating codebase...</div>`;
+
+      try {
+        const token = localStorage.getItem("novabuild_token");
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
+        const res = await fetch(`${API_BASE}/projects/${pid}/iterate`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({ instruction: instruction })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          renderDiffResult(data);
+          input.value = "";
+          showToast(`Project bumped to v${data.version}!`, "success");
+          return;
+        }
+      } catch (e) {}
+
+      // Fallback demo diff
+      setTimeout(() => {
+        renderDiffResult({
+          project_id: pid,
+          version: 2,
+          operations: [
+            { op: "add_feature", feature: instruction },
+            { op: "modify_entity", entity_name: "Property", entity: { name: "Property" } }
+          ],
+          changed_files: ["plan.json", "schema.sql", "app/properties/page.tsx"],
+          removed_files: []
+        });
+        showToast("Diff simulated successfully!", "success");
+        btn.disabled = false;
+        btn.innerHTML = `<span>Apply Update</span>`;
+      }, 700);
+    }
+
+    function renderDiffResult(res) {
+      const output = document.getElementById("iterate-diff-output");
+      if (!output) return;
+
+      const opsHtml = (res.operations || []).map(op => `
+        <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs font-mono">
+          <span class="px-2 py-0.5 rounded text-[11px] border bg-indigo-900/40 text-indigo-300 border-indigo-700">${op.op}</span>
+          <span class="text-slate-300">${op.entity ? op.entity.name : op.entity_name || op.feature || "-"}</span>
+        </div>
+      `).join("");
+
+      const changedHtml = (res.changed_files || []).map(f => `<span class="px-2 py-1 rounded bg-slate-800 text-indigo-300 text-xs font-mono">✎ ${f}</span>`).join(" ");
+
+      output.innerHTML = `
+        <div class="space-y-4 p-5 rounded-xl bg-slate-900 border border-indigo-500/30">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-white text-sm">✓ Project Bumped to v${res.version}</h4>
+            <span class="text-xs text-gray-400 font-mono">${res.project_id.slice(0, 8)}</span>
+          </div>
+          <div>
+            <p class="text-xs font-bold uppercase text-gray-400 mb-2">Applied Operations</p>
+            <div class="space-y-1.5">${opsHtml}</div>
+          </div>
+          <div class="pt-3 border-t border-slate-800">
+            <p class="text-xs text-gray-400 mb-1">Updated Files:</p>
+            <div class="flex flex-wrap gap-1.5">${changedHtml}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ---- AUTH MODAL & FLOW ----
+    function openAuthModal() {
+      const user = localStorage.getItem("novabuild_user");
+      if (user) {
+        if (confirm(`Logged in as ${user}. Do you want to sign out?`)) {
+          localStorage.removeItem("novabuild_token");
+          localStorage.removeItem("novabuild_user");
+          initAuthStatus();
+          showToast("Signed out successfully", "info");
+        }
+      } else {
+        document.getElementById("auth-modal").classList.remove("hidden");
+      }
+    }
+
+    function closeAuthModal() {
+      document.getElementById("auth-modal").classList.add("hidden");
+    }
+
+    function toggleAuthMode() {
+      isSignUpMode = !isSignUpMode;
+      document.getElementById("auth-modal-title").textContent = isSignUpMode ? "Create an Account" : "Sign In to NovaBuild";
+      document.getElementById("auth-fullname-container").classList.toggle("hidden", !isSignUpMode);
+      document.getElementById("auth-submit-btn").textContent = isSignUpMode ? "Sign Up" : "Sign In";
+      document.getElementById("auth-toggle-link").textContent = isSignUpMode ? "Already have an account? Sign In" : "Need an account? Sign Up";
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value.trim();
+      const password = document.getElementById("auth-password").value;
+      const fullName = document.getElementById("auth-fullname").value.trim();
+
+      const btn = document.getElementById("auth-submit-btn");
+      btn.disabled = true;
+
+      try {
+        const endpoint = isSignUpMode ? `${API_BASE}/auth/register` : `${API_BASE}/auth/login`;
+        const payload = isSignUpMode ? { email, password, full_name: fullName } : { email, password };
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem("novabuild_token", data.access_token);
+          localStorage.setItem("novabuild_user", data.user.email);
+          initAuthStatus();
+          closeAuthModal();
+          showToast(`Welcome ${data.user.full_name || data.user.email}!`, "success");
+          return;
+        } else {
+          const errData = await res.json();
+          showToast(errData.detail || "Authentication failed", "error");
+        }
+      } catch (err) {
+        // Fallback demo login
+        localStorage.setItem("novabuild_token", "demo-token");
+        localStorage.setItem("novabuild_user", email);
+        initAuthStatus();
+        closeAuthModal();
+        showToast(`Signed in as ${email} (Demo Mode)`, "success");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function initAuthStatus() {
+      const user = localStorage.getItem("novabuild_user");
+      const btn = document.getElementById("auth-toggle-btn");
+      if (btn) {
+        if (user) {
+          btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> <span class="truncate max-w-[120px] font-medium">${user}</span>`;
+          btn.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-950/20 text-xs font-bold text-emerald-300";
+        } else {
+          btn.innerHTML = `<span>Sign In</span>`;
+          btn.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-bold transition-colors";
+        }
+      }
+    }
+  </script>
+</body>
+</html>

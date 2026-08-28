@@ -143,6 +143,10 @@ def apply_diff(current_plan: AppPlan, ops: List[PlanDiffOp]) -> Tuple[AppPlan, L
         description=description,
         entities=new_entities,
         features=features,
+        pages=current_plan.pages,
+        navigation=current_plan.navigation,
+        auth_config=current_plan.auth_config,
+        project_dna=current_plan.project_dna,
     )
     return new_plan, touched, removed
 
