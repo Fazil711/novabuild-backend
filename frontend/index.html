@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NovaBuild — Fullstack AI Studio, Live Preview & Deployment</title>
+  <title>NovaBuild — Fullstack Next.js App Builder & Cloud Deployment</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="css/style.css">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -15,12 +16,17 @@
         extend: {
           colors: {
             brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#312e81',
+              50: '#fafafa',
+              100: '#f4f4f5',
+              200: '#e4e4e7',
+              300: '#d4d4d8',
+              400: '#a1a1aa',
+              500: '#71717a',
+              600: '#52525b',
+              700: '#3f3f46',
+              800: '#27272a',
+              900: '#18181b',
+              950: '#09090b',
             }
           }
         }
@@ -32,104 +38,63 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
-    
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-    ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
-
-    /* Glass Panels */
-    .glass-panel {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #09090b;
+      color: #fafafa;
     }
-    .glass-card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
-    .glass-card:hover {
-      border-color: rgba(99, 102, 241, 0.4);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
-    }
-
-    /* Pulse Bar */
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
-      50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
-    }
-    .pulse-bar { animation: pulse-glow 2s infinite ease-in-out; }
-
-    /* Code Line Numbers */
-    .line-numbers { counter-reset: line; }
-    .line-numbers > div { counter-increment: line; position: relative; padding-left: 3.5rem; }
-    .line-numbers > div::before {
-      content: counter(line);
-      position: absolute;
-      left: 0;
-      width: 2.5rem;
-      text-align: right;
-      color: #475569;
-      user-select: none;
-    }
-
-    /* Toast Animation */
-    @keyframes slide-in-up {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .toast-animate { animation: slide-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+<body class="bg-[#09090b] text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-zinc-800 selection:text-white">
 
   <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 bg-slate-950/80">
+  <header class="sticky top-0 z-40 w-full bg-[#09090b]/95 border-b border-zinc-800/90 backdrop-blur-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <!-- Logo & Status -->
       <div class="flex items-center gap-6">
-        <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('studio')">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white font-black text-lg">
-            N
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('studio')">
+          <div class="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            ▲
           </div>
           <div>
-            <h1 class="text-base font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">
+            <h1 class="text-sm font-bold tracking-tight text-zinc-100">
               NovaBuild
             </h1>
-            <span class="text-[10px] font-mono font-semibold uppercase tracking-wider text-indigo-400 block -mt-1">Studio & Cloud Deploy</span>
+            <span class="text-[10px] font-mono font-medium uppercase tracking-wider text-zinc-400 block -mt-0.5">App Engine</span>
           </div>
         </div>
 
-        <div id="backend-status-badge" class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] bg-slate-900 border border-slate-800 cursor-pointer" onclick="checkBackendHealth(true)">
-          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-          <span class="text-gray-400">Checking Backend...</span>
+        <div id="backend-status-badge" class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-md text-[11px] bg-[#121215] border border-zinc-800 cursor-pointer hover:border-zinc-700" onclick="checkBackendHealth(true)">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span class="text-zinc-400">Checking API...</span>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900/90 border border-slate-800">
-        <button id="tab-studio" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/20 text-indigo-400 border border-indigo-500/50" onclick="switchView('studio')">
-          ✨ Studio
+      <nav class="flex items-center gap-1 p-1 rounded-xl bg-[#121215] border border-zinc-800">
+        <button id="tab-studio" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-zinc-800 text-white shadow-sm" onclick="switchView('studio')">
+          Studio
         </button>
-        <button id="tab-projects" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white" onclick="switchView('projects')">
-          📂 Projects
+        <button id="tab-projects" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50" onclick="switchView('projects')">
+          Projects
         </button>
-        <button id="tab-code" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white" onclick="switchView('code')">
-          💻 Code & Live Preview
+        <button id="tab-code" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50" onclick="switchView('code')">
+          Code & Preview
         </button>
-        <button id="tab-iterate" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white" onclick="switchView('iterate')">
-          ⚡ Iterate
+        <button id="tab-iterate" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50" onclick="switchView('iterate')">
+          Iterate
+        </button>
+        <button id="tab-chat" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 flex items-center gap-1.5" onclick="switchView('chat')">
+          <span>💬</span> <span>Chat</span>
         </button>
       </nav>
 
       <!-- Auth Action Button -->
       <div class="flex items-center gap-3">
-        <button id="auth-toggle-btn" onclick="openAuthModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-bold transition-colors">
+        <button id="auth-toggle-btn" onclick="openAuthModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-zinc-800 bg-[#121215] hover:bg-zinc-800 text-xs font-semibold text-zinc-200 transition-colors">
           <span>Sign In</span>
         </button>
       </div>
@@ -143,83 +108,83 @@
     <section id="view-studio" class="view-section space-y-8">
       <!-- Hero Banner -->
       <div class="text-center max-w-3xl mx-auto pt-4 pb-2 space-y-3">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-          <span>⚡ Conversational AI App Builder</span>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-[#121215] text-zinc-300 border border-zinc-800">
+          <span>⚡ Software Architecture & Code Engine</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-          Turn your idea into a <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">production Next.js App</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-100">
+          Turn your idea into a <span class="text-white border-b-2 border-zinc-700 pb-0.5">production Next.js application</span>
         </h2>
-        <p class="text-sm text-gray-400">
-          Fast 1-shot generation or guided discovery interview with multi-modal design and PDF references.
+        <p class="text-sm text-zinc-400">
+          Fast natural language generation or guided discovery interview with multi-modal design and PDF references.
         </p>
 
         <!-- Studio Mode Switcher: 1-Shot vs Guided Discovery -->
-        <div class="inline-flex p-1 rounded-xl bg-slate-900 border border-slate-800 gap-1 mt-2">
-          <button id="mode-quick-btn" onclick="setStudioMode('quick')" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40">
+        <div class="inline-flex p-1 rounded-xl bg-[#121215] border border-zinc-800 gap-1 mt-2">
+          <button id="mode-quick-btn" onclick="setStudioMode('quick')" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-zinc-800 text-white shadow-sm">
             ⚡ Quick 1-Shot
           </button>
-          <button id="mode-discovery-btn" onclick="setStudioMode('discovery')" class="px-4 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent">
+          <button id="mode-discovery-btn" onclick="setStudioMode('discovery')" class="px-4 py-1.5 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 border border-transparent">
             💬 Guided Discovery (5-6 Q&A)
           </button>
         </div>
       </div>
 
       <!-- Quick 1-Shot Mode Input Box -->
-      <div id="studio-quick-box" class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+      <div id="studio-quick-box" class="bg-[#121215] rounded-2xl p-6 sm:p-7 border border-zinc-800 shadow-xl relative overflow-hidden">
         <div class="space-y-4">
           <div class="flex items-center justify-between">
-            <label for="prompt-input" class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
-              <span>✍️ Describe Your Application Idea</span>
+            <label for="prompt-input" class="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+              <span>✍️ Application Specifications & Requirements</span>
             </label>
-            <span class="text-[11px] text-gray-500">Fast streaming generation</span>
+            <span class="text-[11px] text-zinc-500 font-mono">Fast streaming generation</span>
           </div>
 
           <textarea
             id="prompt-input"
             rows="3"
             placeholder="e.g., Build a B2B SaaS CRM with leads, customer pipelines, interaction notes, and sales stages..."
-            class="w-full rounded-2xl bg-slate-900/90 border border-slate-700/80 p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all shadow-inner"
+            class="w-full rounded-xl bg-[#18181b] border border-zinc-800 p-3.5 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all"
           ></textarea>
 
           <!-- Quick Preset Chips -->
           <div class="flex flex-wrap items-center gap-2 pt-1">
-            <span class="text-xs text-gray-500 font-semibold">Try preset:</span>
-            <button onclick="applyPreset('Build a high-end Real Estate Property Marketplace with properties, agents, and viewing requests')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+            <span class="text-xs text-zinc-500 font-medium">Try preset:</span>
+            <button onclick="applyPreset('Build a high-end Real Estate Property Marketplace with properties, agents, and viewing requests')" class="text-xs px-3 py-1.5 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition-colors">
               🏡 Real Estate Marketplace
             </button>
-            <button onclick="applyPreset('Build an Inventory Management System with items, suppliers, purchase orders, and stock alerts')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+            <button onclick="applyPreset('Build an Inventory Management System with items, suppliers, purchase orders, and stock alerts')" class="text-xs px-3 py-1.5 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition-colors">
               📦 Inventory Hub
             </button>
-            <button onclick="applyPreset('Build a SaaS Bug & Issue Tracker with projects, tickets, assignees, and sprint tags')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-indigo-900/40 text-slate-300 hover:text-indigo-300 border border-slate-700 transition-colors">
+            <button onclick="applyPreset('Build a SaaS Bug & Issue Tracker with projects, tickets, assignees, and sprint tags')" class="text-xs px-3 py-1.5 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition-colors">
               🐞 Issue Tracker
             </button>
           </div>
 
           <!-- REFERENCE UPLOADS ACCORDION -->
-          <div class="pt-2 border-t border-slate-800/80">
+          <div class="pt-3 border-t border-zinc-800/80">
             <div class="flex items-center justify-between cursor-pointer py-1" onclick="toggleReferencePanel()">
-              <span class="text-xs font-bold text-indigo-400 flex items-center gap-1.5">
-                <span>📎</span> <span>Attach Reference (Screenshots, PDFs, Figma URLs)</span>
+              <span class="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+                <span>📎</span> <span>Attach Reference Documents (Screenshots, PDFs, Figma URLs)</span>
               </span>
-              <span id="reference-toggle-icon" class="text-xs text-slate-400">▼</span>
+              <span id="reference-toggle-icon" class="text-xs text-zinc-400">▼</span>
             </div>
 
-            <div id="reference-upload-panel" class="hidden mt-3 p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <div id="reference-upload-panel" class="hidden mt-3 p-4 rounded-xl bg-[#18181b] border border-zinc-800 space-y-3">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <!-- File Upload Dropzone -->
-                <div class="border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-4 text-center cursor-pointer transition-colors" onclick="document.getElementById('ref-file-input').click()">
+                <div class="border-2 border-dashed border-zinc-800 hover:border-zinc-600 rounded-xl p-4 text-center cursor-pointer bg-[#121215]/50 transition-colors" onclick="document.getElementById('ref-file-input').click()">
                   <input type="file" id="ref-file-input" accept=".pdf,.png,.jpg,.jpeg,.webp" class="hidden" onchange="handleReferenceFileUpload(this.files)" />
                   <span class="text-xl block mb-1">📄 / 🖼️</span>
-                  <p class="text-xs font-semibold text-slate-300">Upload PDF Spec or Screenshot</p>
-                  <p class="text-[10px] text-slate-500 mt-0.5">PDF requirements, PNG/JPG mockups</p>
+                  <p class="text-xs font-semibold text-zinc-200">Upload PDF Spec or Screenshot</p>
+                  <p class="text-[10px] text-zinc-500 mt-0.5">PDF requirements, PNG/JPG mockups</p>
                 </div>
 
                 <!-- Figma / Web URL Input -->
-                <div class="flex flex-col justify-center gap-2 p-3 bg-slate-900 rounded-xl border border-slate-800">
-                  <label class="text-[11px] font-semibold text-slate-400">Or Paste Figma / Web Link:</label>
+                <div class="flex flex-col justify-center gap-2 p-3 bg-[#121215] rounded-xl border border-zinc-800">
+                  <label class="text-[11px] font-semibold text-zinc-400">Or Paste Figma / Web Link:</label>
                   <div class="flex gap-1.5">
-                    <input type="url" id="ref-url-input" placeholder="https://figma.com/file/..." class="flex-1 rounded-lg bg-slate-950 border border-slate-700 px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
-                    <button onclick="handleReferenceLinkSubmit()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors">
+                    <input type="url" id="ref-url-input" placeholder="https://figma.com/file/..." class="flex-1 rounded-lg bg-[#18181b] border border-zinc-800 px-2.5 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500" />
+                    <button onclick="handleReferenceLinkSubmit()" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold border border-zinc-700 transition-colors">
                       Link
                     </button>
                   </div>
@@ -234,52 +199,52 @@
           </div>
 
           <div class="flex items-center justify-between pt-3">
-            <button onclick="loadSampleDemoBlueprint()" class="text-xs text-indigo-400 hover:text-indigo-300 underline font-medium">
+            <button onclick="loadSampleDemoBlueprint()" class="text-xs text-zinc-400 hover:text-zinc-200 underline font-medium">
               💡 Or load sample demo blueprint
             </button>
-            <button id="generate-plan-btn" onclick="handleGenerateBlueprint()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2">
+            <button id="generate-plan-btn" onclick="handleGenerateBlueprint()" class="px-5 py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs shadow-sm transition-all flex items-center gap-2">
               <span>✨ Generate Blueprint</span>
             </button>
           </div>
         </div>
 
         <!-- Real-Time SSE Progress Bar -->
-        <div id="stream-progress-container" class="hidden mt-6 pt-6 border-t border-slate-800/80 space-y-2">
-          <div class="flex justify-between text-xs font-semibold">
-            <span id="stream-progress-text" class="text-indigo-300">Initializing...</span>
-            <span id="stream-percent-text" class="text-gray-400">0%</span>
+        <div id="stream-progress-container" class="hidden mt-5 pt-5 border-t border-zinc-800 space-y-2">
+          <div class="flex justify-between text-xs font-medium">
+            <span id="stream-progress-text" class="text-zinc-300">Initializing engine...</span>
+            <span id="stream-percent-text" class="text-zinc-500 font-mono">0%</span>
           </div>
-          <div class="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden">
-            <div id="stream-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300 pulse-bar" style="width: 0%;"></div>
+          <div class="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+            <div id="stream-progress-bar" class="h-full bg-zinc-200 transition-all duration-300" style="width: 0%;"></div>
           </div>
         </div>
       </div>
 
       <!-- Guided Discovery Q&A Box -->
-      <div id="studio-discovery-box" class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-2xl relative overflow-hidden hidden space-y-6">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+      <div id="studio-discovery-box" class="bg-[#121215] rounded-2xl p-6 sm:p-7 border border-zinc-800 shadow-xl relative overflow-hidden hidden space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-zinc-800">
           <div>
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <h3 class="text-base font-bold text-zinc-100 flex items-center gap-2">
               <span>💬 Conversational Discovery Interview</span>
-              <span id="discovery-status-tag" class="text-[10px] uppercase px-2 py-0.5 rounded bg-indigo-900/40 text-indigo-300 border border-indigo-700">Interview Mode</span>
+              <span id="discovery-status-tag" class="text-[10px] uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono">Interview Mode</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">Answer 4–5 targeted questions to build deep Project DNA and evaluate Confidence Score.</p>
+            <p class="text-xs text-zinc-400 mt-0.5">Answer targeted domain questions to build deep Project DNA and evaluate Confidence Score.</p>
           </div>
-          <div id="confidence-badge-container" class="hidden flex items-center gap-2 p-2 rounded-xl bg-slate-900 border border-slate-700">
-            <span class="text-xs font-bold text-indigo-400">Confidence:</span>
-            <span id="confidence-score-val" class="text-sm font-black text-emerald-400">94%</span>
+          <div id="confidence-badge-container" class="hidden flex items-center gap-2 p-2 rounded-lg bg-[#18181b] border border-zinc-800">
+            <span class="text-xs font-semibold text-zinc-400">Confidence:</span>
+            <span id="confidence-score-val" class="text-sm font-bold text-emerald-400 font-mono">94%</span>
           </div>
         </div>
 
-        <div id="discovery-questions-list" class="space-y-4">
+        <div id="discovery-questions-list" class="space-y-3">
           <!-- Dynamic discovery questions render here -->
         </div>
 
-        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
-          <button onclick="startDiscoverySession()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">
+        <div class="flex justify-between items-center pt-4 border-t border-zinc-800">
+          <button onclick="startDiscoverySession()" class="px-4 py-2 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-300 text-xs font-semibold border border-zinc-800">
             🔄 Restart Discovery
           </button>
-          <button id="submit-discovery-btn" onclick="handleSubmitDiscoveryAnswers()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg flex items-center gap-2">
+          <button id="submit-discovery-btn" onclick="handleSubmitDiscoveryAnswers()" class="px-5 py-2 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs shadow-sm flex items-center gap-2">
             <span>Evaluate & Synthesize Blueprint →</span>
           </button>
         </div>
@@ -293,15 +258,15 @@
     <section id="view-projects" class="view-section hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-black text-white">Your Generated Projects</h2>
-          <p class="text-xs text-gray-400 mt-1">Browse, inspect, deploy, and export your generated applications</p>
+          <h2 class="text-xl font-bold text-zinc-100">Your Generated Projects</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Browse, inspect, deploy, and export your generated applications</p>
         </div>
-        <button onclick="switchView('studio')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md">
+        <button onclick="switchView('studio')" class="px-3.5 py-1.5 bg-white hover:bg-zinc-200 text-zinc-950 rounded-lg text-xs font-semibold shadow-sm transition-colors">
           + New Application
         </button>
       </div>
 
-      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Dynamically populated -->
       </div>
     </section>
@@ -310,40 +275,40 @@
     <section id="view-code" class="view-section hidden space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-2xl font-black text-white">Code & Live App Preview</h2>
-          <p class="text-xs text-gray-400 mt-0.5">Inspect full-stack code or interact with the live running CRUD application</p>
+          <h2 class="text-xl font-bold text-zinc-100">Code & Live App Preview</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Inspect full-stack code or interact with the live running CRUD application</p>
         </div>
 
         <!-- Studio Mode Switcher: Code vs Preview vs Split -->
         <div class="flex items-center gap-2 flex-wrap">
-          <div class="inline-flex p-1 rounded-xl bg-slate-900 border border-slate-800 gap-1">
-            <button id="viewmode-code-btn" onclick="setCodeViewMode('code')" class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40">
+          <div class="inline-flex p-1 rounded-xl bg-[#121215] border border-zinc-800 gap-1">
+            <button id="viewmode-code-btn" onclick="setCodeViewMode('code')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-800 text-white shadow-sm">
               💻 Code View
             </button>
-            <button id="viewmode-preview-btn" onclick="setCodeViewMode('preview')" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent">
+            <button id="viewmode-preview-btn" onclick="setCodeViewMode('preview')" class="px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 border border-transparent">
               👁️ Live Preview
             </button>
-            <button id="viewmode-split-btn" onclick="setCodeViewMode('split')" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent">
+            <button id="viewmode-split-btn" onclick="setCodeViewMode('split')" class="px-3 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 border border-transparent">
               🔀 Split View
             </button>
           </div>
 
           <!-- Device Viewport Switcher (for Preview) -->
-          <div id="device-switcher" class="hidden sm:inline-flex p-1 rounded-xl bg-slate-900 border border-slate-800 gap-1">
-            <button onclick="setPreviewDevice('desktop')" class="px-2.5 py-1 rounded-lg text-xs text-slate-300 hover:bg-slate-800" title="Desktop View">🖥️</button>
-            <button onclick="setPreviewDevice('tablet')" class="px-2.5 py-1 rounded-lg text-xs text-slate-300 hover:bg-slate-800" title="Tablet View">📱 Tab</button>
-            <button onclick="setPreviewDevice('mobile')" class="px-2.5 py-1 rounded-lg text-xs text-slate-300 hover:bg-slate-800" title="Mobile View">📱 Mobile</button>
+          <div id="device-switcher" class="hidden sm:inline-flex p-1 rounded-xl bg-[#121215] border border-zinc-800 gap-1">
+            <button onclick="setPreviewDevice('desktop')" class="px-2.5 py-1 rounded-lg text-xs text-zinc-300 hover:bg-zinc-800" title="Desktop View">🖥️</button>
+            <button onclick="setPreviewDevice('tablet')" class="px-2.5 py-1 rounded-lg text-xs text-zinc-300 hover:bg-zinc-800" title="Tablet View">📱 Tab</button>
+            <button onclick="setPreviewDevice('mobile')" class="px-2.5 py-1 rounded-lg text-xs text-zinc-300 hover:bg-zinc-800" title="Mobile View">📱 Mobile</button>
           </div>
 
           <!-- ONE-CLICK DEPLOY BUTTON -->
-          <button onclick="openDeployModal()" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg transition-all flex items-center gap-1.5">
+          <button onclick="openDeployModal()" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5">
             <span>🚀 Deploy Live</span>
           </button>
 
-          <button id="copy-code-btn" onclick="copyActiveCode()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-colors">
+          <button id="copy-code-btn" onclick="copyActiveCode()" class="px-3 py-1.5 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-200 text-xs font-medium border border-zinc-800 transition-colors">
             📋 Copy
           </button>
-          <a id="download-zip-btn" href="#" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-md">
+          <a id="download-zip-btn" href="#" class="px-3.5 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-sm">
             <span>📦 ZIP</span>
           </a>
         </div>
@@ -352,10 +317,10 @@
       <!-- Main Code / Preview Workspace Container -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-4 min-h-[650px]">
         <!-- File Tree Sidebar -->
-        <div id="code-sidebar-panel" class="md:col-span-3 glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col">
-          <div class="pb-3 mb-3 border-b border-slate-800 flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Project Files</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-indigo-400 font-mono">Next.js 14</span>
+        <div id="code-sidebar-panel" class="md:col-span-3 bg-[#121215] rounded-xl p-4 border border-zinc-800 flex flex-col">
+          <div class="pb-3 mb-3 border-b border-zinc-800 flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Project Files</span>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono border border-zinc-700/60">Next.js 14</span>
           </div>
           <div id="file-tree-container" class="flex-1 overflow-y-auto space-y-1">
             <!-- Populated dynamically -->
@@ -363,23 +328,23 @@
         </div>
 
         <!-- Code Viewer Panel -->
-        <div id="code-viewer-panel" class="md:col-span-9 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden">
-          <div class="px-4 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+        <div id="code-viewer-panel" class="md:col-span-9 bg-[#121215] rounded-xl border border-zinc-800 flex flex-col overflow-hidden">
+          <div class="px-4 py-2.5 bg-[#18181b] border-b border-zinc-800 flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-rose-500/80"></span>
-              <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
-              <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
-              <span id="active-filename" class="text-xs font-mono font-medium text-slate-300 ml-2 truncate">app/layout.tsx</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+              <span id="active-filename" class="text-xs font-mono font-medium text-zinc-300 ml-2 truncate">app/layout.tsx</span>
             </div>
           </div>
-          <div id="code-view-container" class="flex-1 p-4 overflow-auto bg-slate-950/80 min-h-[550px]">
+          <div id="code-view-container" class="flex-1 p-4 overflow-auto bg-[#0c0c0e] min-h-[550px]">
             <!-- Code populated dynamically -->
           </div>
         </div>
 
         <!-- Live Interactive App Preview Panel -->
-        <div id="live-preview-panel" class="hidden md:col-span-9 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden min-h-[600px] p-2 bg-slate-900/40">
-          <div id="interactive-preview-container" class="flex-1 overflow-hidden rounded-xl border border-slate-800 shadow-2xl bg-slate-950">
+        <div id="live-preview-panel" class="hidden md:col-span-9 bg-[#121215] rounded-xl border border-zinc-800 flex flex-col overflow-hidden min-h-[600px] p-2">
+          <div id="interactive-preview-container" class="flex-1 overflow-hidden rounded-lg border border-zinc-800 bg-[#09090b]">
             <!-- Rendered by PreviewRunner -->
           </div>
         </div>
@@ -389,40 +354,134 @@
     <!-- VIEW 4: ITERATION STUDIO -->
     <section id="view-iterate" class="view-section hidden space-y-6">
       <div>
-        <h2 class="text-2xl font-black text-white">Project Iteration Studio</h2>
-        <p class="text-xs text-gray-400 mt-1">Make incremental changes to your project with conversational instructions</p>
+        <h2 class="text-xl font-bold text-zinc-100">Project Iteration Studio</h2>
+        <p class="text-xs text-zinc-400 mt-0.5">Make incremental changes to your project with conversational instructions</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <!-- Left: Instruction Form -->
-        <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+        <div class="bg-[#121215] rounded-xl p-5 border border-zinc-800 space-y-4">
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Select Target Project</label>
-            <select id="iterate-project-select" class="w-full rounded-xl bg-slate-900 border border-slate-700 p-3 text-xs text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">Select Target Project</label>
+            <select id="iterate-project-select" class="w-full rounded-lg bg-[#18181b] border border-zinc-800 p-2.5 text-xs text-zinc-200 focus:border-zinc-500 focus:outline-none">
               <!-- Dynamically populated -->
             </select>
           </div>
 
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Modification Instruction</label>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">Modification Instruction</label>
             <textarea
               id="iterate-prompt-input"
               rows="4"
               placeholder="e.g., Add a priority rating (1-5) and notes field to the tasks entity..."
-              class="w-full rounded-xl bg-slate-900 border border-slate-700 p-3 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              class="w-full rounded-lg bg-[#18181b] border border-zinc-800 p-3 text-xs text-zinc-100 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
             ></textarea>
           </div>
 
-          <button id="iterate-submit-btn" onclick="handleIterateSubmit()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition-colors flex items-center justify-center gap-2">
+          <button id="iterate-submit-btn" onclick="handleIterateSubmit()" class="w-full py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs shadow-sm transition-colors flex items-center justify-center gap-2">
             <span>Apply Update</span>
           </button>
         </div>
 
         <!-- Right: Diff & Results Viewer -->
-        <div class="lg:col-span-2 glass-panel rounded-2xl p-6 border border-slate-800">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Iteration Diff & Version Log</h3>
-          <div id="iterate-diff-output" class="min-h-[250px] flex items-center justify-center text-xs text-gray-500">
+        <div class="lg:col-span-2 bg-[#121215] rounded-xl p-5 border border-zinc-800">
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-4">Iteration Diff & Version Log</h3>
+          <div id="iterate-diff-output" class="min-h-[250px] flex items-center justify-center text-xs text-zinc-500">
             Submit a modification above to see applied operations and file diffs.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: CASUAL CHAT COPILOT -->
+    <section id="view-chat" class="view-section hidden space-y-6">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <!-- Chat Header Banner -->
+        <div class="bg-[#121215] rounded-2xl p-5 border border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xl shadow-sm">
+              🤖
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h2 class="text-base font-bold text-zinc-100">NovaBuild Copilot</h2>
+                <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/80 font-mono flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+                </span>
+              </div>
+              <p class="text-xs text-zinc-400 mt-0.5">Casual chat, brainstorming, tech stack advice, schema tips, and system architecture.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-medium border border-zinc-800 transition-colors">
+              🗑️ Clear
+            </button>
+            <button onclick="switchView('studio')" class="px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold shadow-sm transition-colors">
+              Go to Studio →
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Main Workspace -->
+        <div class="bg-[#121215] rounded-2xl border border-zinc-800 flex flex-col h-[640px] shadow-xl overflow-hidden">
+          <!-- Messages Scroll Area -->
+          <div id="chat-messages-container" class="flex-1 p-5 overflow-y-auto space-y-4 font-sans text-sm">
+            <!-- Initial Welcome Message -->
+            <div class="flex items-start gap-3 max-w-3xl">
+              <div class="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-sm flex-shrink-0">
+                🤖
+              </div>
+              <div class="space-y-3 bg-[#18181b] border border-zinc-800 rounded-2xl p-4 text-zinc-200 text-xs sm:text-sm leading-relaxed">
+                <p>
+                  Hey! I'm <strong>NovaBuild Copilot</strong>. You can chat casually with me about anything software related — from bouncing early app ideas, refining data models, troubleshooting Next.js and Supabase, to planning database schemas.
+                </p>
+                <p class="text-zinc-400 text-xs">
+                  Whenever we hit an architecture you like, you can click <span class="text-zinc-200 font-semibold">"Synthesize into Blueprint"</span> to instantly generate full production code!
+                </p>
+                <!-- Quick Starter Prompts -->
+                <div class="pt-2 border-t border-zinc-800/80">
+                  <p class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2">Try a prompt to get started:</p>
+                  <div class="flex flex-wrap gap-2">
+                    <button onclick="sendQuickPrompt('What database schema and tables do I need for a multi-vendor marketplace with stripe?')" class="text-left text-xs px-3 py-1.5 rounded-lg bg-[#121215] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition">
+                      🛍️ Schema for multi-vendor marketplace
+                    </button>
+                    <button onclick="sendQuickPrompt('Help me brainstorm 5 high-value features for a modern AI-powered CRM app.')" class="text-left text-xs px-3 py-1.5 rounded-lg bg-[#121215] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition">
+                      💡 Brainstorm AI CRM features
+                    </button>
+                    <button onclick="sendQuickPrompt('Explain how Next.js 14 App Router handles Server Actions vs Route Handlers.')" class="text-left text-xs px-3 py-1.5 rounded-lg bg-[#121215] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 transition">
+                      ⚡ Server Actions vs Route Handlers
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Input Area -->
+          <div class="p-3.5 bg-[#141417] border-t border-zinc-800/80">
+            <form id="chat-form" onsubmit="handleSendChat(event)" class="relative flex items-end gap-2">
+              <div class="flex-1 relative">
+                <textarea
+                  id="chat-user-input"
+                  rows="2"
+                  placeholder="Ask a question, brainstorm an idea, or ask for architecture advice... (Shift+Enter for new line, Enter to send)"
+                  class="w-full rounded-xl bg-[#18181b] border border-zinc-800 p-3 pr-10 text-xs sm:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 resize-none"
+                  onkeydown="handleChatKeyDown(event)"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                id="chat-send-btn"
+                class="px-4 py-3 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs transition-all shadow-sm flex items-center justify-center gap-1.5 flex-shrink-0"
+              >
+                <span>Send</span>
+                <span class="text-xs">↑</span>
+              </button>
+            </form>
+            <div class="flex items-center justify-between mt-2 px-1 text-[11px] text-zinc-500">
+              <span>NovaBuild AI Chat Copilot</span>
+              <span>Markdown & Code highlighting supported</span>
+            </div>
           </div>
         </div>
       </div>
@@ -431,62 +490,62 @@
   </main>
 
   <!-- CLOUD DEPLOYMENT MODAL -->
-  <div id="deploy-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="glass-panel rounded-3xl max-w-xl w-full p-6 sm:p-8 border border-slate-700 shadow-2xl relative space-y-4">
-      <button onclick="closeDeployModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl">&times;</button>
+  <div id="deploy-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-[#121215] rounded-2xl max-w-xl w-full p-6 sm:p-7 border border-zinc-800 shadow-2xl relative space-y-4">
+      <button onclick="closeDeployModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">&times;</button>
       
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xl font-bold border border-emerald-500/30">
+        <div class="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 flex items-center justify-center text-base font-bold">
           🚀
         </div>
         <div>
-          <h3 class="text-base font-bold text-white">One-Click Cloud Deployment</h3>
-          <p class="text-xs text-gray-400">Deploy fullstack Next.js 14 codebase to live production hosting</p>
+          <h3 class="text-base font-bold text-zinc-100">One-Click Cloud Deployment</h3>
+          <p class="text-xs text-zinc-400">Deploy fullstack Next.js 14 codebase to live production hosting</p>
         </div>
       </div>
 
       <!-- Provider & Token Settings -->
-      <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2.5">
+      <div class="p-3.5 rounded-xl bg-[#18181b] border border-zinc-800 space-y-2.5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Target Cloud Provider</label>
-            <select id="deploy-provider-select" class="w-full rounded-lg bg-slate-950 border border-slate-700 px-2.5 py-1.5 text-xs text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+            <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Target Cloud Provider</label>
+            <select id="deploy-provider-select" class="w-full rounded-lg bg-[#121215] border border-zinc-800 px-2.5 py-1.5 text-xs text-white focus:border-zinc-500 focus:outline-none">
               <option value="netlify" selected>Netlify (Instant Live Deploy)</option>
               <option value="vercel">Vercel Serverless</option>
               <option value="mock">Sandbox Simulator</option>
             </select>
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Personal Access Token <span class="text-slate-500 font-normal">(Optional)</span></label>
+            <label class="block text-[11px] font-semibold text-zinc-400 mb-1">Personal Access Token <span class="text-zinc-500 font-normal">(Optional)</span></label>
             <input
               type="password"
               id="deploy-token-input"
               placeholder="e.g. nfp_... (Netlify) or vercel_..."
-              class="w-full rounded-lg bg-slate-950 border border-slate-700 px-2.5 py-1.5 text-xs text-white placeholder-slate-600 focus:ring-1 focus:ring-emerald-500 focus:outline-none font-mono"
+              class="w-full rounded-lg bg-[#121215] border border-zinc-800 px-2.5 py-1.5 text-xs text-white placeholder-zinc-600 focus:border-zinc-500 focus:outline-none font-mono"
             />
           </div>
         </div>
-        <p class="text-[10px] text-slate-500">
-          💡 <span class="text-slate-400">Want a real public .netlify.app URL?</span> Paste your free Netlify Access Token (Netlify User Settings ➔ Applications ➔ New access token). Without a token, you can use the built-in Interactive Live Preview.
+        <p class="text-[10px] text-zinc-500">
+          💡 <span class="text-zinc-400">Want a real public .netlify.app URL?</span> Paste your free Netlify Access Token (Netlify User Settings ➔ Applications ➔ New access token). Without a token, you can use the built-in Interactive Live Preview.
         </p>
       </div>
 
       <!-- Live Terminal Output Area -->
-      <div class="rounded-2xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs overflow-hidden shadow-inner">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80 text-[11px] text-slate-500">
+      <div class="rounded-xl bg-[#0c0c0e] border border-zinc-800 p-4 font-mono text-xs overflow-hidden shadow-inner">
+        <div class="flex items-center justify-between pb-2 mb-2 border-b border-zinc-800/80 text-[11px] text-zinc-500">
           <span>Build Log Terminal</span>
-          <span id="deploy-percent-badge" class="text-indigo-400">0%</span>
+          <span id="deploy-percent-badge" class="text-zinc-300 font-mono">0%</span>
         </div>
-        <div class="w-full h-1.5 bg-slate-900 rounded-full mb-3 overflow-hidden">
-          <div id="deploy-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width: 0%;"></div>
+        <div class="w-full h-1.5 bg-zinc-800 rounded-full mb-3 overflow-hidden">
+          <div id="deploy-progress-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%;"></div>
         </div>
-        <div id="deploy-terminal-logs" class="h-36 overflow-y-auto space-y-1.5 text-slate-300 text-[11px]">
-          <p class="text-slate-500">Click "Start Live Deployment" below to begin packaging...</p>
+        <div id="deploy-terminal-logs" class="h-36 overflow-y-auto space-y-1.5 text-zinc-300 text-[11px]">
+          <p class="text-zinc-500">Click "Start Live Deployment" below to begin packaging...</p>
         </div>
       </div>
 
       <!-- Live URL Result (Hidden until ready) -->
-      <div id="deploy-success-box" class="hidden p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between">
+      <div id="deploy-success-box" class="hidden p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-800/60 flex items-center justify-between">
         <div>
           <p class="text-[11px] font-bold uppercase text-emerald-400">✓ Deployment Pipeline Complete</p>
           <a id="deploy-live-url-link" href="#" target="_blank" class="text-xs font-mono font-bold text-white hover:underline mt-0.5 block truncate max-w-xs">
@@ -494,10 +553,10 @@
           </a>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="closeDeployModal(); setCodeViewMode('preview');" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors">
+          <button onclick="closeDeployModal(); setCodeViewMode('preview');" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold border border-zinc-700 transition-colors">
             👁️ In-Browser Preview
           </button>
-          <a id="deploy-visit-btn" href="#" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors">
+          <a id="deploy-visit-btn" href="#" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors">
             Open URL ↗
           </a>
         </div>
@@ -505,14 +564,14 @@
 
       <!-- Deploy Actions -->
       <div class="flex justify-between items-center pt-2">
-        <button onclick="closeDeployModal(); setCodeViewMode('preview');" class="text-xs text-indigo-400 hover:underline">
+        <button onclick="closeDeployModal(); setCodeViewMode('preview');" class="text-xs text-zinc-400 hover:text-zinc-200 underline">
           👁️ Or test in In-Browser Live Preview
         </button>
         <div class="flex gap-2">
-          <button onclick="closeDeployModal()" class="px-4 py-2 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs font-semibold text-slate-300">
+          <button onclick="closeDeployModal()" class="px-4 py-2 rounded-lg border border-zinc-800 hover:bg-zinc-850 text-xs font-medium text-zinc-300">
             Close
           </button>
-          <button id="start-deploy-btn" onclick="handleStartDeployment()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition-colors flex items-center gap-1.5">
+          <button id="start-deploy-btn" onclick="handleStartDeployment()" class="px-5 py-2 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5">
             <span>🚀 Start Live Deployment</span>
           </button>
         </div>
@@ -521,17 +580,20 @@
   </div>
 
   <!-- Auth Modal -->
-  <div id="auth-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="glass-panel rounded-3xl max-w-md w-full p-8 border border-slate-700 shadow-2xl relative">
-      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-xl">&times;</button>
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-[#121215] rounded-2xl max-w-md w-full p-6 sm:p-7 border border-zinc-800 shadow-2xl relative">
+      <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white text-xl">&times;</button>
       
+      <h3 id="auth-modal-title" class="text-lg font-bold text-zinc-100 text-center mb-1">Sign In to NovaBuild</h3>
+      <p class="text-xs text-zinc-400 text-center mb-5">Manage and isolate your generated applications</p>
+
       <!-- Google Sign In Button -->
       <div class="space-y-3 mb-4">
         <div id="google-signin-btn-container" class="w-full flex justify-center min-h-[40px]">
           <button
             type="button"
             onclick="handleGoogleSignIn()"
-            class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-3 border border-slate-200 cursor-pointer"
+            class="w-full py-2.5 px-4 rounded-lg bg-white hover:bg-zinc-100 text-zinc-900 font-semibold text-xs shadow-sm transition-all flex items-center justify-center gap-3 border border-zinc-200 cursor-pointer"
           >
             <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -544,57 +606,57 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="flex-1 h-px bg-slate-800"></div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">or continue with email</span>
-          <div class="flex-1 h-px bg-slate-800"></div>
+          <div class="flex-1 h-px bg-zinc-800"></div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-500">or continue with email</span>
+          <div class="flex-1 h-px bg-zinc-800"></div>
         </div>
       </div>
 
-      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
         <div id="auth-fullname-container" class="hidden">
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
+          <label class="block text-xs font-semibold text-zinc-300 mb-1">Full Name</label>
           <input
             type="text"
             id="auth-fullname"
             placeholder="John Doe"
-            class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            class="w-full rounded-lg bg-[#18181b] border border-zinc-800 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
+          <label class="block text-xs font-semibold text-zinc-300 mb-1">Email Address</label>
           <input
             type="email"
             id="auth-email"
             required
             placeholder="name@company.com"
-            class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            class="w-full rounded-lg bg-[#18181b] border border-zinc-800 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Password</label>
+          <label class="block text-xs font-semibold text-zinc-300 mb-1">Password</label>
           <input
             type="password"
             id="auth-password"
             required
             minlength="6"
             placeholder="••••••••"
-            class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            class="w-full rounded-lg bg-[#18181b] border border-zinc-800 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
           />
         </div>
 
         <button
           type="submit"
           id="auth-submit-btn"
-          class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg transition-colors"
+          class="w-full py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-xs shadow-sm transition-colors"
         >
           Sign In
         </button>
       </form>
 
-      <div class="mt-6 text-center">
-        <a href="javascript:void(0)" onclick="toggleAuthMode()" id="auth-toggle-link" class="text-xs text-indigo-400 hover:underline font-medium">
+      <div class="mt-5 text-center">
+        <a href="javascript:void(0)" onclick="toggleAuthMode()" id="auth-toggle-link" class="text-xs text-zinc-400 hover:text-white underline font-medium">
           Need an account? Sign Up
         </a>
       </div>
@@ -882,11 +944,11 @@ export const supabase = createClient(
         const activeEntity = entities.find(e => `/${e.plural.toLowerCase()}` === this.activeRoute);
 
         const navLinks = `
-          <button onclick="window.__previewRunner.setRoute('/')" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold ${this.activeRoute === '/' ? 'bg-indigo-600/30 text-indigo-400 font-bold' : 'text-slate-300 hover:bg-slate-800'}">
+          <button onclick="window.__previewRunner.setRoute('/')" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold ${this.activeRoute === '/' ? 'bg-[#18181b] text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200 hover:bg-[#18181b]/60'}">
             <span>📊</span> <span>Dashboard</span>
           </button>
           ${entities.map(e => `
-            <button onclick="window.__previewRunner.setRoute('/${e.plural.toLowerCase()}')" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold ${this.activeRoute === `/${e.plural.toLowerCase()}` ? 'bg-indigo-600/30 text-indigo-400 font-bold' : 'text-slate-300 hover:bg-slate-800'}">
+            <button onclick="window.__previewRunner.setRoute('/${e.plural.toLowerCase()}')" class="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold ${this.activeRoute === `/${e.plural.toLowerCase()}` ? 'bg-[#18181b] text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200 hover:bg-[#18181b]/60'}">
               <span>📦</span> <span>${e.plural}</span>
             </button>
           `).join("")}
@@ -897,18 +959,18 @@ export const supabase = createClient(
           mainView = `
             <div class="space-y-6">
               <div>
-                <h3 class="text-xl font-bold text-white">${this.plan.app_name} Dashboard</h3>
-                <p class="text-xs text-slate-400 mt-1">${this.plan.description}</p>
+                <h3 class="text-lg font-bold text-zinc-100">${this.plan.app_name} Dashboard</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">${this.plan.description}</p>
               </div>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 ${entities.map(e => {
                   const table = e.plural.toLowerCase();
                   const count = (this.db[table] || []).length;
                   return `
-                    <div onclick="window.__previewRunner.setRoute('/${table}')" class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-indigo-500/40 cursor-pointer">
-                      <p class="text-xs text-slate-400">${e.plural}</p>
-                      <p class="text-2xl font-black text-white mt-1">${count}</p>
-                      <p class="text-[10px] text-indigo-400 mt-1">Manage ${e.plural} →</p>
+                    <div onclick="window.__previewRunner.setRoute('/${table}')" class="p-4 rounded-xl bg-[#121215] border border-zinc-800/80 hover:border-zinc-700 cursor-pointer transition">
+                      <p class="text-xs text-zinc-400">${e.plural}</p>
+                      <p class="text-2xl font-bold text-zinc-100 mt-1">${count}</p>
+                      <p class="text-[11px] text-zinc-400 mt-2 flex items-center gap-1 hover:text-zinc-200">Manage ${e.plural} →</p>
                     </div>
                   `;
                 }).join("")}
@@ -922,15 +984,15 @@ export const supabase = createClient(
             return Object.values(r).some(v => String(v).toLowerCase().includes(this.searchTerm.toLowerCase()));
           });
 
-          const tableHeaders = (activeEntity.fields || []).map(f => `<th class="p-2.5 text-left text-[11px] font-semibold text-slate-400 uppercase">${f.name}</th>`).join("");
+          const tableHeaders = (activeEntity.fields || []).map(f => `<th class="p-2.5 text-left text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">${f.name}</th>`).join("");
           const tableRows = records.map(r => {
             const cells = (activeEntity.fields || []).map(f => {
               const val = r[f.name];
               const display = f.type === "boolean" ? (val ? "✓ Yes" : "✗ No") : (val ?? "-");
-              return `<td class="p-2.5 text-xs text-slate-200">${display}</td>`;
+              return `<td class="p-2.5 text-xs text-zinc-200">${display}</td>`;
             }).join("");
             return `
-              <tr class="border-b border-slate-800/60 hover:bg-slate-800/30">
+              <tr class="border-b border-zinc-800/60 hover:bg-zinc-800/20 transition-colors">
                 ${cells}
                 <td class="p-2.5 text-right">
                   <button onclick="window.__previewRunner.deleteRecord('${activeEntity.name}', '${r.id}')" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Delete</button>
@@ -943,10 +1005,10 @@ export const supabase = createClient(
             <div class="space-y-4">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-bold text-white">${activeEntity.plural}</h3>
-                  <p class="text-xs text-slate-400">${records.length} records found</p>
+                  <h3 class="text-base font-bold text-zinc-100">${activeEntity.plural}</h3>
+                  <p class="text-xs text-zinc-400">${records.length} records found</p>
                 </div>
-                <button onclick="window.__previewRunner.toggleModal(true)" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow">
+                <button onclick="window.__previewRunner.toggleModal(true)" class="px-3.5 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold shadow-sm transition">
                   + Add ${activeEntity.name}
                 </button>
               </div>
@@ -957,14 +1019,14 @@ export const supabase = createClient(
                   placeholder="Search ${activeEntity.plural.toLowerCase()}..."
                   value="${this.searchTerm}"
                   oninput="window.__previewRunner.searchTerm = this.value; window.__previewRunner.render();"
-                  class="w-full max-w-xs rounded-lg bg-slate-900 border border-slate-800 px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  class="w-full max-w-xs rounded-lg bg-[#18181b] border border-zinc-800 px-3 py-1.5 text-xs text-zinc-100 placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
                 />
               </div>
 
-              <div class="bg-slate-900/90 rounded-xl border border-slate-800 overflow-x-auto shadow-sm">
+              <div class="bg-[#121215] rounded-xl border border-zinc-800/80 overflow-x-auto">
                 <table class="w-full text-left">
-                  <thead class="bg-slate-800/60 border-b border-slate-800"><tr>${tableHeaders}<th class="p-2.5 text-right uppercase text-[11px] text-slate-400">Actions</th></tr></thead>
-                  <tbody>${tableRows || `<tr><td colspan="${(activeEntity.fields || []).length + 1}" class="p-8 text-center text-xs text-slate-500">No records found.</td></tr>`}</tbody>
+                  <thead class="bg-[#18181b] border-b border-zinc-800"><tr>${tableHeaders}<th class="p-2.5 text-right uppercase text-[11px] text-zinc-400">Actions</th></tr></thead>
+                  <tbody>${tableRows || `<tr><td colspan="${(activeEntity.fields || []).length + 1}" class="p-8 text-center text-xs text-zinc-500">No records found.</td></tr>`}</tbody>
                 </table>
               </div>
             </div>
@@ -972,19 +1034,19 @@ export const supabase = createClient(
         }
 
         this.container.innerHTML = `
-          <div class="h-full flex flex-col bg-slate-950 text-slate-100 overflow-hidden ${widthClass}">
-            <header class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+          <div class="h-full flex flex-col bg-[#0c0c0e] text-zinc-100 overflow-hidden ${widthClass}">
+            <header class="px-4 py-2.5 bg-[#121215] border-b border-zinc-800 flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span class="w-5 h-5 rounded bg-indigo-600 flex items-center justify-center text-[10px] font-bold">${this.plan.app_name.charAt(0)}</span>
-                <span class="text-xs font-bold text-white">${this.plan.app_name}</span>
+                <span class="w-5 h-5 rounded bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-200">${this.plan.app_name.charAt(0)}</span>
+                <span class="text-xs font-semibold text-zinc-200">${this.plan.app_name}</span>
               </div>
-              <span class="text-[10px] text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 font-mono">● Live App Sandbox</span>
+              <span class="text-[10px] text-zinc-400 bg-[#18181b] px-2 py-0.5 rounded border border-zinc-800 font-mono">● Live Sandbox</span>
             </header>
             <div class="flex-1 flex overflow-hidden">
-              <aside class="w-44 bg-slate-900/50 border-r border-slate-800 p-2.5 space-y-1">
+              <aside class="w-44 bg-[#101013] border-r border-zinc-800 p-2.5 space-y-1">
                 ${navLinks}
               </aside>
-              <main class="flex-1 p-5 overflow-y-auto bg-slate-950/80">
+              <main class="flex-1 p-5 overflow-y-auto bg-[#0c0c0e]">
                 ${mainView}
               </main>
             </div>
@@ -1245,13 +1307,13 @@ export const supabase = createClient(
       const discBox = document.getElementById("studio-discovery-box");
 
       if (mode === "quick") {
-        quickBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
-        discBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent";
+        quickBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-white text-zinc-950 shadow-sm";
+        discBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 border border-transparent";
         quickBox.classList.remove("hidden");
         discBox.classList.add("hidden");
       } else {
-        discBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
-        quickBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent";
+        discBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold bg-white text-zinc-950 shadow-sm";
+        quickBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 border border-transparent";
         discBox.classList.remove("hidden");
         quickBox.classList.add("hidden");
         if (!currentDiscoverySession) {
@@ -1263,11 +1325,9 @@ export const supabase = createClient(
     // ---- DISCOVERY INTERVIEW Q&A ----
     async function startDiscoverySession() {
       const input = document.getElementById("prompt-input");
-      const prompt = input ? input.value.trim() || "Build a high-end luxury real estate marketplace with properties and viewing tours" : "Real estate app";
-      const container = document.getElementById("discovery-questions-list");
-
-      container.innerHTML = `<div class="p-6 text-center text-indigo-300 text-xs">🤖 Synthesizing 5 intelligent discovery questions tailored to your project...</div>`;
-
+      const text = (input ? input.value : "").trim();
+      const prompt = text || "A modern multi-vendor marketplace with buyer accounts, seller portals, automated inventory tracking, and stripe checkout";
+      
       try {
         const res = await fetch(`${API_BASE}/discovery/start`, {
           method: "POST",
@@ -1277,22 +1337,22 @@ export const supabase = createClient(
         if (res.ok) {
           currentDiscoverySession = await res.json();
           renderDiscoveryQuestions(currentDiscoverySession.questions);
-          return;
+          showToast("AI Discovery Interview Started", "info");
+        } else {
+          showToast("Discovery initialization failed", "error");
         }
-      } catch (e) {}
-
-      currentDiscoverySession = {
-        session_id: "demo-discovery-session",
-        prompt: prompt,
-        questions: [
-          { id: "q1", question: "What is the official brand name and primary industry?", context_hint: "Used in Project DNA", type: "text" },
-          { id: "q2", question: "Who are the key users and roles involved?", context_hint: "Defines RBAC auth", type: "single_choice", options: ["Brokers, Buyers & Sellers", "Admin & General Members", "Doctors & Patients"] },
-          { id: "q3", question: "Describe the core user workflow step-by-step:", context_hint: "Defines page routing", type: "text" },
-          { id: "q4", question: "What main entities/data tables need to be tracked?", context_hint: "Generates Supabase schemas", type: "text" },
-          { id: "q5", question: "What UI style do you prefer?", context_hint: "Tailwind theme", type: "single_choice", options: ["Luxury Slate", "Modern Dark Indigo", "Corporate Light"] }
-        ]
-      };
-      renderDiscoveryQuestions(currentDiscoverySession.questions);
+      } catch (err) {
+        console.warn("Using offline fallback discovery session", err);
+        currentDiscoverySession = {
+          session_id: "disc_offline_mock",
+          questions: [
+            { id: "q1", question: "Who will be using this platform primarily?", type: "single_choice", options: ["Both B2B and B2C", "Strictly B2B Enterprise", "General Public Consumers"], context_hint: "Target Audience" },
+            { id: "q2", question: "Do you require multi-currency or localized tax compliance?", type: "single_choice", options: ["USD only (Standard)", "Multi-currency with automated Stripe tax", "Crypto & Web3 payments"], context_hint: "Payments Architecture" },
+            { id: "q3", question: "What level of access control is required?", type: "single_choice", options: ["Simple Role-Based (Admin, User)", "Granular RBAC with Team Permissions", "Public read-only with OAuth"], context_hint: "Security & Permissions" }
+          ]
+        };
+        renderDiscoveryQuestions(currentDiscoverySession.questions);
+      }
     }
 
     function renderDiscoveryQuestions(questions) {
@@ -1305,8 +1365,8 @@ export const supabase = createClient(
           inputEl = `
             <div class="flex flex-wrap gap-2 mt-2">
               ${q.options.map(opt => `
-                <label class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-300 hover:border-indigo-500 cursor-pointer flex items-center gap-1.5">
-                  <input type="radio" name="${q.id}" value="${opt}" class="text-indigo-600" />
+                <label class="px-3 py-1.5 rounded-lg bg-[#18181b] border border-zinc-800 text-xs text-zinc-300 hover:border-zinc-700 cursor-pointer flex items-center gap-1.5">
+                  <input type="radio" name="${q.id}" value="${opt}" class="accent-zinc-100" />
                   <span>${opt}</span>
                 </label>
               `).join("")}
@@ -1318,18 +1378,18 @@ export const supabase = createClient(
               type="text"
               name="${q.id}"
               placeholder="Your answer..."
-              class="w-full mt-2 rounded-xl bg-slate-900 border border-slate-700 p-2.5 text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              class="w-full mt-2 rounded-xl bg-[#18181b] border border-zinc-800 p-2.5 text-xs text-zinc-100 placeholder-zinc-500 focus:border-zinc-600 focus:outline-none"
             />
           `;
         }
 
         return `
-          <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-1">
+          <div class="p-4 rounded-2xl bg-[#121215] border border-zinc-800/80 space-y-1">
             <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-indigo-400">Question ${index + 1}</span>
-              <span class="text-[10px] text-slate-500">${q.context_hint || 'Discovery Requirement'}</span>
+              <span class="text-xs font-semibold text-zinc-400">Question ${index + 1}</span>
+              <span class="text-[10px] text-zinc-500">${q.context_hint || 'Discovery Requirement'}</span>
             </div>
-            <p class="text-xs font-semibold text-slate-200">${q.question}</p>
+            <p class="text-xs font-semibold text-zinc-200">${q.question}</p>
             ${inputEl}
           </div>
         `;
@@ -1368,61 +1428,58 @@ export const supabase = createClient(
             renderBlueprint(plan);
             if (previewRunner) previewRunner.initDatabase(plan);
             showToast(`Confidence: ${session.confidence ? session.confidence.score : 94}% — Blueprint Synthesized!`, "success");
-            return;
+            switchView("studio");
           }
         }
-      } catch (e) {}
-
-      document.getElementById("confidence-badge-container").classList.remove("hidden");
-      document.getElementById("confidence-score-val").textContent = "94%";
-      currentPlan = SAMPLE_BLUEPRINT;
-      renderBlueprint(SAMPLE_BLUEPRINT);
-      if (previewRunner) previewRunner.initDatabase(SAMPLE_BLUEPRINT);
-      showToast("Confidence: 94% — Deep Blueprint Synthesized!", "success");
-
-      btn.disabled = false;
-      btn.innerHTML = `<span>Evaluate & Synthesize Blueprint →</span>`;
+      } catch (err) {
+        showToast("Using offline synthesis fallback", "info");
+        renderBlueprint(SAMPLE_BLUEPRINT);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>✨ Synthesize Optimized Blueprint</span>`;
+      }
     }
 
-    // ---- CODE VIEW & PREVIEW SWITCHER ----
-    function setCodeViewMode(mode) {
-      codeViewMode = mode;
-      const codeBtn = document.getElementById("viewmode-code-btn");
-      const prevBtn = document.getElementById("viewmode-preview-btn");
-      const splitBtn = document.getElementById("viewmode-split-btn");
-      const sidebar = document.getElementById("code-sidebar-panel");
-      const viewer = document.getElementById("code-viewer-panel");
+    // ---- CODE VIEW SUB-MODE TOGGLE ----
+    function setCodeMode(mode) {
+      currentCodeMode = mode;
+      const codeBtn = document.getElementById("submode-code-btn");
+      const prevBtn = document.getElementById("submode-preview-btn");
+      const splitBtn = document.getElementById("submode-split-btn");
+
+      const sidebar = document.getElementById("code-sidebar-col");
+      const viewer = document.getElementById("code-viewer-col");
       const preview = document.getElementById("live-preview-panel");
       const deviceSwitcher = document.getElementById("device-switcher");
 
       [codeBtn, prevBtn, splitBtn].forEach(b => {
-        b.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent";
+        b.className = "px-3 py-1 rounded-lg text-xs font-semibold text-zinc-400 hover:text-zinc-200 border border-transparent";
       });
 
       if (mode === "code") {
-        codeBtn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
+        codeBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-[#18181b] text-white border border-zinc-700";
         sidebar.classList.remove("hidden");
-        sidebar.className = "md:col-span-3 glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col";
+        sidebar.className = "md:col-span-3 rounded-2xl p-4 border border-zinc-800 bg-[#121215] flex flex-col";
         viewer.classList.remove("hidden");
-        viewer.className = "md:col-span-9 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden";
+        viewer.className = "md:col-span-9 rounded-2xl border border-zinc-800 bg-[#121215] flex flex-col overflow-hidden";
         preview.classList.add("hidden");
         deviceSwitcher.classList.add("hidden");
       } else if (mode === "preview") {
-        prevBtn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
+        prevBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-[#18181b] text-white border border-zinc-700";
         sidebar.classList.add("hidden");
         viewer.classList.add("hidden");
         preview.classList.remove("hidden");
-        preview.className = "md:col-span-12 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden min-h-[600px] p-2";
+        preview.className = "md:col-span-12 rounded-2xl border border-zinc-800 bg-[#121215] flex flex-col overflow-hidden min-h-[600px] p-2";
         deviceSwitcher.classList.remove("hidden");
         if (previewRunner) previewRunner.render();
       } else if (mode === "split") {
-        splitBtn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-indigo-600/30 text-indigo-300 border border-indigo-500/40";
+        splitBtn.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-[#18181b] text-white border border-zinc-700";
         sidebar.classList.remove("hidden");
-        sidebar.className = "md:col-span-2 glass-panel rounded-2xl p-3 border border-slate-800 flex flex-col";
+        sidebar.className = "md:col-span-2 rounded-2xl p-3 border border-zinc-800 bg-[#121215] flex flex-col";
         viewer.classList.remove("hidden");
-        viewer.className = "md:col-span-5 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden";
+        viewer.className = "md:col-span-5 rounded-2xl border border-zinc-800 bg-[#121215] flex flex-col overflow-hidden";
         preview.classList.remove("hidden");
-        preview.className = "md:col-span-5 glass-panel rounded-2xl border border-slate-800 flex flex-col overflow-hidden min-h-[600px] p-2";
+        preview.className = "md:col-span-5 rounded-2xl border border-zinc-800 bg-[#121215] flex flex-col overflow-hidden min-h-[600px] p-2";
         deviceSwitcher.classList.remove("hidden");
         if (previewRunner) previewRunner.render();
       }
@@ -1437,18 +1494,18 @@ export const supabase = createClient(
 
     // ---- TAB SWITCHING ----
     function switchView(viewName) {
-      const tabs = ["studio", "projects", "code", "iterate"];
+      const tabs = ["studio", "projects", "code", "iterate", "chat"];
       tabs.forEach(name => {
         const tabBtn = document.getElementById(`tab-${name}`);
         const viewSec = document.getElementById(`view-${name}`);
         if (name === viewName) {
           if (tabBtn) {
-            tabBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-600/20 text-indigo-400 border border-indigo-500/50";
+            tabBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-[#18181b] text-white border border-zinc-700";
           }
           if (viewSec) viewSec.classList.remove("hidden");
         } else {
           if (tabBtn) {
-            tabBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-400 border border-transparent hover:text-white";
+            tabBtn.className = "nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-zinc-400 border border-transparent hover:text-zinc-200";
           }
           if (viewSec) viewSec.classList.add("hidden");
         }
@@ -1460,6 +1517,9 @@ export const supabase = createClient(
         populateIterateDropdown();
       } else if (viewName === "code") {
         if (previewRunner) previewRunner.render();
+      } else if (viewName === "chat") {
+        const input = document.getElementById("chat-user-input");
+        if (input) setTimeout(() => input.focus(), 100);
       }
     }
 
@@ -1485,9 +1545,14 @@ export const supabase = createClient(
       const container = document.getElementById("toast-container");
       if (!container) return;
       const el = document.createElement("div");
-      const bg = type === "error" ? "bg-red-600 text-white" : type === "success" ? "bg-emerald-600 text-white" : "bg-indigo-600 text-white";
-      el.className = `p-4 rounded-xl shadow-2xl flex items-center gap-3 text-xs font-semibold toast-animate ${bg}`;
-      el.innerHTML = `<span>✦</span> <span>${msg}</span>`;
+      const icon = type === "error" ? "⚠️" : type === "success" ? "✓" : "✦";
+      const style = type === "error" 
+        ? "bg-[#18181b] border-rose-900/60 text-rose-300" 
+        : type === "success" 
+        ? "bg-[#18181b] border-emerald-900/60 text-emerald-300" 
+        : "bg-[#18181b] border-zinc-700 text-zinc-100";
+      el.className = `p-3.5 rounded-xl shadow-2xl border flex items-center gap-2.5 text-xs font-semibold toast-animate ${style}`;
+      el.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
       container.appendChild(el);
       setTimeout(() => el.remove(), 4000);
     }
@@ -1610,30 +1675,30 @@ export const supabase = createClient(
 
       let dnaHtml = "";
       if (project_dna) {
-        const users = (project_dna.target_users || []).map(u => `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-900/40 text-indigo-300 border border-indigo-700/50">${u}</span>`).join(" ");
-        const goals = (project_dna.goals || []).map(g => `<li class="text-xs text-gray-300 flex items-center gap-1.5"><span class="text-indigo-400">✦</span> ${g}</li>`).join("");
+        const users = (project_dna.target_users || []).map(u => `<span class="px-2.5 py-1 rounded-full text-xs font-medium bg-[#18181b] text-zinc-300 border border-zinc-800">${u}</span>`).join(" ");
+        const goals = (project_dna.goals || []).map(g => `<li class="text-xs text-zinc-400 flex items-center gap-1.5"><span class="text-zinc-500">✦</span> ${g}</li>`).join("");
 
         dnaHtml = `
-          <div class="glass-card rounded-2xl p-5 border border-indigo-500/20 bg-gradient-to-br from-indigo-950/40 via-slate-900/50 to-slate-900/30">
+          <div class="rounded-2xl p-5 border border-zinc-800/80 bg-[#121215]">
             <div class="flex items-center gap-2 mb-3">
-              <span class="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400 text-sm">🧬</span>
-              <h3 class="text-sm font-bold uppercase tracking-wider text-indigo-300">Project DNA & Business Profile</h3>
+              <span class="p-1.5 rounded-lg bg-zinc-800/60 text-zinc-300 text-sm">🧬</span>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300">Project DNA & Architecture Spec</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div>
-                <p class="text-xs text-gray-400">Business / Industry</p>
-                <p class="font-semibold text-white mt-0.5">${project_dna.business_name || app_name} <span class="text-xs font-normal text-indigo-300">(${project_dna.industry || type})</span></p>
+                <p class="text-xs text-zinc-500">Business / Industry</p>
+                <p class="font-semibold text-zinc-200 mt-0.5">${project_dna.business_name || app_name} <span class="text-xs font-normal text-zinc-400">(${project_dna.industry || type})</span></p>
               </div>
               <div>
-                <p class="text-xs text-gray-400 mb-1">Target Users</p>
-                <div class="flex flex-wrap gap-1.5">${users || '<span class="text-gray-500 text-xs">General Users</span>'}</div>
+                <p class="text-xs text-zinc-500 mb-1">Target Users</p>
+                <div class="flex flex-wrap gap-1.5">${users || '<span class="text-zinc-500 text-xs">General Users</span>'}</div>
               </div>
               <div>
-                <p class="text-xs text-gray-400">Primary Workflow</p>
-                <p class="text-xs text-gray-300 mt-0.5">${project_dna.main_workflow || 'Standard CRUD with Auth'}</p>
+                <p class="text-xs text-zinc-500">Primary Workflow</p>
+                <p class="text-xs text-zinc-300 mt-0.5">${project_dna.main_workflow || 'Standard CRUD with Auth'}</p>
               </div>
             </div>
-            ${goals ? `<div class="mt-3 pt-3 border-t border-slate-800"><p class="text-xs text-gray-400 mb-1">Core Goals:</p><ul class="grid grid-cols-1 md:grid-cols-2 gap-1">${goals}</ul></div>` : ""}
+            ${goals ? `<div class="mt-3 pt-3 border-t border-zinc-800/80"><p class="text-xs text-zinc-500 mb-1">Core Goals:</p><ul class="grid grid-cols-1 md:grid-cols-2 gap-1">${goals}</ul></div>` : ""}
           </div>
         `;
       }
@@ -1641,43 +1706,43 @@ export const supabase = createClient(
       const entitiesHtml = entities.map(entity => {
         const fieldsHtml = (entity.fields || []).map(f => {
           const typeColors = {
-            text: "bg-blue-900/40 text-blue-300 border-blue-800",
-            number: "bg-amber-900/40 text-amber-300 border-amber-800",
-            boolean: "bg-emerald-900/40 text-emerald-300 border-emerald-800",
-            date: "bg-purple-900/40 text-purple-300 border-purple-800",
-            textarea: "bg-cyan-900/40 text-cyan-300 border-cyan-800",
-            select: "bg-rose-900/40 text-rose-300 border-rose-800"
+            text: "bg-zinc-800/80 text-zinc-300 border-zinc-700",
+            number: "bg-zinc-800/80 text-zinc-300 border-zinc-700",
+            boolean: "bg-zinc-800/80 text-zinc-300 border-zinc-700",
+            date: "bg-zinc-800/80 text-zinc-300 border-zinc-700",
+            textarea: "bg-zinc-800/80 text-zinc-300 border-zinc-700",
+            select: "bg-zinc-800/80 text-zinc-300 border-zinc-700"
           };
-          const badgeClass = typeColors[f.type] || "bg-gray-800 text-gray-300 border-gray-700";
-          const requiredBadge = f.required ? `<span class="text-xs text-red-400 font-bold ml-1">*</span>` : "";
-          const optionsHtml = f.options && f.options.length ? `<span class="text-[10px] text-gray-400 block mt-0.5">options: [${f.options.join(", ")}]</span>` : "";
+          const badgeClass = typeColors[f.type] || "bg-zinc-800/80 text-zinc-300 border-zinc-700";
+          const requiredBadge = f.required ? `<span class="text-xs text-rose-400 font-bold ml-1">*</span>` : "";
+          const optionsHtml = f.options && f.options.length ? `<span class="text-[10px] text-zinc-500 block mt-0.5">options: [${f.options.join(", ")}]</span>` : "";
 
           return `
-            <tr class="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
-              <td class="py-2 px-3 font-mono text-xs text-indigo-300 font-medium">${f.name}${requiredBadge}</td>
-              <td class="py-2 px-3">
+            <tr class="border-b border-zinc-800/60 hover:bg-zinc-800/20 transition-colors">
+              <td class="py-2.5 px-3 font-mono text-xs text-zinc-200 font-medium">${f.name}${requiredBadge}</td>
+              <td class="py-2.5 px-3">
                 <span class="px-2 py-0.5 rounded text-[11px] font-mono border ${badgeClass}">${f.type}</span>
                 ${optionsHtml}
               </td>
-              <td class="py-2 px-3 text-xs text-gray-400">${f.required ? 'Required' : 'Optional'}</td>
+              <td class="py-2.5 px-3 text-xs text-zinc-400">${f.required ? 'Required' : 'Optional'}</td>
             </tr>
           `;
         }).join("");
 
         return `
-          <div class="glass-card rounded-xl border border-slate-800 overflow-hidden">
-            <div class="p-3.5 bg-slate-800/60 border-b border-slate-700/50 flex justify-between items-center">
+          <div class="rounded-xl border border-zinc-800/80 bg-[#121215] overflow-hidden">
+            <div class="p-3.5 bg-[#18181b] border-b border-zinc-800 flex justify-between items-center">
               <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-                <h4 class="font-bold text-white text-sm">${entity.name}</h4>
-                <span class="text-xs text-gray-400 font-mono">(${entity.plural ? entity.plural.toLowerCase() : 'items'})</span>
+                <span class="w-2 h-2 rounded-full bg-zinc-400"></span>
+                <h4 class="font-semibold text-zinc-100 text-sm">${entity.name}</h4>
+                <span class="text-xs text-zinc-500 font-mono">(${entity.plural ? entity.plural.toLowerCase() : 'items'})</span>
               </div>
-              <span class="text-xs text-gray-400">${(entity.fields || []).length} fields</span>
+              <span class="text-xs text-zinc-400">${(entity.fields || []).length} fields</span>
             </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left">
                 <thead>
-                  <tr class="text-[10px] uppercase font-bold text-gray-400 bg-slate-900/40 border-b border-slate-800">
+                  <tr class="text-[10px] uppercase font-bold text-zinc-400 bg-[#141418] border-b border-zinc-800">
                     <th class="py-2 px-3">Field Name</th>
                     <th class="py-2 px-3">Data Type</th>
                     <th class="py-2 px-3">Constraint</th>
@@ -1691,32 +1756,32 @@ export const supabase = createClient(
       }).join("");
 
       const pagesHtml = (pages || []).map(p => `
-        <div class="p-3 rounded-lg bg-slate-800/40 border border-slate-800 flex items-center justify-between">
+        <div class="p-3 rounded-lg bg-[#18181b] border border-zinc-800 flex items-center justify-between">
           <div>
-            <p class="text-xs font-semibold text-white">${p.title || p.name}</p>
-            <p class="text-[11px] font-mono text-gray-400">${p.path}</p>
+            <p class="text-xs font-semibold text-zinc-200">${p.title || p.name}</p>
+            <p class="text-[11px] font-mono text-zinc-500">${p.path}</p>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-slate-800 text-indigo-300 border border-indigo-900/50">${p.page_type || 'view'}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-[#121215] text-zinc-400 border border-zinc-800">${p.page_type || 'view'}</span>
         </div>
       `).join("");
 
       const featuresHtml = (features || []).map(f => `
-        <li class="flex items-center gap-2 text-xs text-gray-300">
-          <span class="text-emerald-400 font-bold">✓</span> ${f}
+        <li class="flex items-center gap-2 text-xs text-zinc-300">
+          <span class="text-zinc-400 font-bold">✓</span> ${f}
         </li>
       `).join("");
 
       container.innerHTML = `
         <div class="space-y-6">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-indigo-900/30 via-slate-900/80 to-slate-900 border border-indigo-500/30">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl bg-[#121215] border border-zinc-800/80">
             <div>
               <div class="flex items-center gap-3">
-                <h2 class="text-2xl font-black text-white tracking-tight">${app_name}</h2>
-                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${type}</span>
+                <h2 class="text-2xl font-bold text-zinc-100 tracking-tight">${app_name}</h2>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700">${type}</span>
               </div>
-              <p class="text-sm text-gray-300 mt-1 max-w-2xl">${description}</p>
+              <p class="text-sm text-zinc-400 mt-1 max-w-2xl">${description}</p>
             </div>
-            <button id="approve-build-btn" onclick="handleApproveBuild()" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+            <button id="approve-build-btn" onclick="handleApproveBuild()" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-semibold text-sm transition shadow-sm">
               <span>🚀 Approve & Generate Code</span>
             </button>
           </div>
@@ -1724,31 +1789,31 @@ export const supabase = createClient(
           ${dnaHtml}
 
           <div>
-            <h3 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-3 flex items-center gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
               <span>📦 Database Entities & Relations</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-gray-400">${entities.length} tables</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">${entities.length} tables</span>
             </h3>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">${entitiesHtml}</div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="glass-card rounded-xl p-4 border border-slate-800">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-2">
+            <div class="rounded-xl p-4 border border-zinc-800/80 bg-[#121215]">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-3 flex items-center gap-2">
                 <span>📱 UI Page Structure</span>
-                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-indigo-400">${pages.length} pages</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">${pages.length} pages</span>
               </h4>
               <div class="space-y-2">${pagesHtml}</div>
             </div>
 
-            <div class="glass-card rounded-xl p-4 border border-slate-800 space-y-4">
+            <div class="rounded-xl p-4 border border-zinc-800/80 bg-[#121215] space-y-4">
               <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">⚡ Core Features</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">⚡ Core Features</h4>
                 <ul class="space-y-1.5">${featuresHtml}</ul>
               </div>
               ${auth_config ? `
-                <div class="pt-3 border-t border-slate-800">
-                  <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">🔐 Auth & RBAC</h4>
-                  <p class="text-xs text-gray-300">Roles: <span class="font-mono text-indigo-300">${(auth_config.roles || []).join(", ")}</span> (Default: ${auth_config.default_role || 'buyer'})</p>
+                <div class="pt-3 border-t border-zinc-800/80">
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">🔐 Auth & RBAC</h4>
+                  <p class="text-xs text-zinc-300">Roles: <span class="font-mono text-zinc-200">${(auth_config.roles || []).join(", ")}</span> (Default: ${auth_config.default_role || 'buyer'})</p>
                 </div>
               ` : ""}
             </div>
@@ -1848,11 +1913,11 @@ export const supabase = createClient(
         else if (file.endsWith(".md")) icon = "📝";
 
         const btn = document.createElement("button");
-        btn.className = `w-full text-left px-3 py-1.5 rounded-lg text-slate-300 hover:bg-slate-800/80 hover:text-white flex items-center gap-2 transition-colors text-xs font-mono ${index === 0 ? "bg-indigo-600/30 text-indigo-300 font-bold" : ""}`;
+        btn.className = `w-full text-left px-3 py-1.5 rounded-lg text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 flex items-center gap-2 transition-colors text-xs font-mono ${index === 0 ? "bg-[#18181b] text-white font-semibold border border-zinc-700/60" : ""}`;
         btn.innerHTML = `<span>${icon}</span> <span class="truncate">${file}</span>`;
         btn.onclick = () => {
-          container.querySelectorAll("button").forEach(b => b.className = "w-full text-left px-3 py-1.5 rounded-lg text-slate-300 hover:bg-slate-800/80 hover:text-white flex items-center gap-2 transition-colors text-xs font-mono");
-          btn.className = "w-full text-left px-3 py-1.5 rounded-lg text-indigo-300 bg-indigo-600/30 font-bold flex items-center gap-2 transition-colors text-xs font-mono";
+          container.querySelectorAll("button").forEach(b => b.className = "w-full text-left px-3 py-1.5 rounded-lg text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 flex items-center gap-2 transition-colors text-xs font-mono");
+          btn.className = "w-full text-left px-3 py-1.5 rounded-lg text-white bg-[#18181b] font-semibold border border-zinc-700/60 flex items-center gap-2 transition-colors text-xs font-mono";
           onSelect(file);
         };
         container.appendChild(btn);
@@ -1930,25 +1995,25 @@ export const supabase = createClient(
       if (!container) return;
 
       container.innerHTML = projects.map(p => `
-        <div class="glass-card rounded-2xl p-5 border border-slate-800 flex flex-col justify-between hover:border-indigo-500/40 transition-all">
+        <div class="rounded-2xl p-5 border border-zinc-800/80 bg-[#121215] flex flex-col justify-between hover:border-zinc-700 transition-all">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${p.type}</span>
-              <span class="text-[11px] font-mono text-gray-400">v${p.version || 1}</span>
+              <span class="px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700">${p.type}</span>
+              <span class="text-[11px] font-mono text-zinc-400">v${p.version || 1}</span>
             </div>
-            <h3 class="text-base font-bold text-white mb-1 truncate">${p.app_name}</h3>
-            <p class="text-xs font-mono text-gray-500 mb-3 truncate">ID: ${p.project_id}</p>
-            <p class="text-xs text-gray-400 mb-4">${(p.created_files || []).length} generated files (Next.js 14 + SQL)</p>
+            <h3 class="text-base font-bold text-zinc-100 mb-1 truncate">${p.app_name}</h3>
+            <p class="text-xs font-mono text-zinc-500 mb-3 truncate">ID: ${p.project_id}</p>
+            <p class="text-xs text-zinc-400 mb-4">${(p.created_files || []).length} generated files (Next.js 14 + SQL)</p>
           </div>
 
-          <div class="flex items-center gap-2 pt-3 border-t border-slate-800/80">
-            <button onclick="openProjectInCode('${p.project_id}')" class="flex-1 py-1.5 px-3 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white text-xs font-bold transition-colors">
+          <div class="flex items-center gap-2 pt-3 border-t border-zinc-800">
+            <button onclick="openProjectInCode('${p.project_id}')" class="flex-1 py-1.5 px-3 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-semibold transition">
               Code View
             </button>
-            <button onclick="openProjectInIterate('${p.project_id}')" class="py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors">
+            <button onclick="openProjectInIterate('${p.project_id}')" class="py-1.5 px-3 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-200 border border-zinc-800 text-xs font-semibold transition">
               Iterate
             </button>
-            <a href="${API_BASE}/projects/${p.project_id}/download" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors" title="Download ZIP">
+            <a href="${API_BASE}/projects/${p.project_id}/download" class="p-1.5 rounded-lg bg-[#18181b] hover:bg-zinc-800 text-zinc-200 border border-zinc-800 text-xs transition" title="Download ZIP">
               📦
             </a>
           </div>
@@ -2052,26 +2117,26 @@ export const supabase = createClient(
       if (!output) return;
 
       const opsHtml = (res.operations || []).map(op => `
-        <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs font-mono">
-          <span class="px-2 py-0.5 rounded text-[11px] border bg-indigo-900/40 text-indigo-300 border-indigo-700">${op.op}</span>
-          <span class="text-slate-300">${op.entity ? op.entity.name : op.entity_name || op.feature || "-"}</span>
+        <div class="p-3 rounded-lg bg-[#18181b] border border-zinc-800 flex items-center justify-between text-xs font-mono">
+          <span class="px-2 py-0.5 rounded text-[11px] border bg-zinc-800 text-zinc-300 border-zinc-700">${op.op}</span>
+          <span class="text-zinc-300">${op.entity ? op.entity.name : op.entity_name || op.feature || "-"}</span>
         </div>
       `).join("");
 
-      const changedHtml = (res.changed_files || []).map(f => `<span class="px-2 py-1 rounded bg-slate-800 text-indigo-300 text-xs font-mono">✎ ${f}</span>`).join(" ");
+      const changedHtml = (res.changed_files || []).map(f => `<span class="px-2 py-1 rounded bg-[#18181b] border border-zinc-800 text-zinc-300 text-xs font-mono">✎ ${f}</span>`).join(" ");
 
       output.innerHTML = `
-        <div class="space-y-4 p-5 rounded-xl bg-slate-900 border border-indigo-500/30">
+        <div class="space-y-4 p-5 rounded-xl bg-[#121215] border border-zinc-800/80">
           <div class="flex items-center justify-between">
-            <h4 class="font-bold text-white text-sm">✓ Project Bumped to v${res.version}</h4>
-            <span class="text-xs text-gray-400 font-mono">${res.project_id.slice(0, 8)}</span>
+            <h4 class="font-bold text-zinc-100 text-sm">✓ Project Bumped to v${res.version}</h4>
+            <span class="text-xs text-zinc-400 font-mono">${res.project_id.slice(0, 8)}</span>
           </div>
           <div>
-            <p class="text-xs font-bold uppercase text-gray-400 mb-2">Applied Operations</p>
+            <p class="text-xs font-bold uppercase text-zinc-400 mb-2">Applied Operations</p>
             <div class="space-y-1.5">${opsHtml}</div>
           </div>
-          <div class="pt-3 border-t border-slate-800">
-            <p class="text-xs text-gray-400 mb-1">Updated Files:</p>
+          <div class="pt-3 border-t border-zinc-800">
+            <p class="text-xs text-zinc-400 mb-1">Updated Files:</p>
             <div class="flex flex-wrap gap-1.5">${changedHtml}</div>
           </div>
         </div>
@@ -2298,6 +2363,207 @@ export const supabase = createClient(
           btn.innerHTML = `<span>Sign In</span>`;
           btn.className = "flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-xs font-bold transition-colors";
         }
+      }
+    }
+
+    // ==========================================
+    // ---- CASUAL CHAT COPILOT CONTROLLER ----
+    // ==========================================
+    let chatConversationHistory = [];
+
+    function handleChatKeyDown(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        handleSendChat(event);
+      }
+    }
+
+    function sendQuickPrompt(promptText) {
+      const input = document.getElementById("chat-user-input");
+      if (input) {
+        input.value = promptText;
+        handleSendChat(new Event("submit"));
+      }
+    }
+
+    function clearChatHistory() {
+      if (confirm("Clear current conversation history?")) {
+        chatConversationHistory = [];
+        const container = document.getElementById("chat-messages-container");
+        if (container) {
+          container.innerHTML = `
+            <div class="flex items-start gap-3 max-w-3xl">
+              <div class="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-sm flex-shrink-0">
+                🤖
+              </div>
+              <div class="space-y-3 bg-[#18181b] border border-zinc-800 rounded-2xl p-4 text-zinc-200 text-xs sm:text-sm leading-relaxed">
+                <p>Chat cleared! What would you like to explore next? Feel free to ask about tech stacks, app architecture, or database schemas.</p>
+              </div>
+            </div>
+          `;
+        }
+        showToast("Chat history cleared", "info");
+      }
+    }
+
+    function formatMarkdown(text) {
+      if (!text) return "";
+      let safe = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      // Code blocks ```code```
+      safe = safe.replace(/```([a-zA-Z0-9_\-\+]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        return `<pre class="my-2.5 p-3 rounded-xl bg-[#0c0c0e] border border-zinc-800 text-xs font-mono text-zinc-200 overflow-x-auto"><code>${code.trim()}</code></pre>`;
+      });
+
+      // Inline code `code`
+      safe = safe.replace(/`([^`]+)`/g, `<code class="px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 font-mono text-xs text-zinc-200">$1</code>`);
+
+      // Bold **text**
+      safe = safe.replace(/\*\*([^*]+)\*\*/g, `<strong class="text-zinc-100 font-semibold">$1</strong>`);
+
+      // Bullet lists
+      safe = safe.replace(/^[*-]\s+(.+)$/gm, `<li class="ml-4 list-disc text-zinc-300">$1</li>`);
+
+      // Paragraph newlines
+      safe = safe.replace(/\n\n/g, `</p><p class="mt-2">`);
+      safe = safe.replace(/\n/g, `<br/>`);
+
+      return `<p>${safe}</p>`;
+    }
+
+    function appendChatMessage(role, content, actions = []) {
+      const container = document.getElementById("chat-messages-container");
+      if (!container) return null;
+
+      const isUser = role === "user";
+      const msgWrapper = document.createElement("div");
+      msgWrapper.className = `flex items-start gap-3 max-w-3xl ${isUser ? "ml-auto flex-row-reverse" : ""}`;
+
+      const avatar = isUser
+        ? `<div class="w-8 h-8 rounded-lg bg-zinc-700 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">You</div>`
+        : `<div class="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-sm flex-shrink-0">🤖</div>`;
+
+      const bubbleBg = isUser
+        ? "bg-zinc-100 text-zinc-950 font-medium"
+        : "bg-[#18181b] border border-zinc-800 text-zinc-200";
+
+      let actionButtonsHtml = "";
+      if (!isUser) {
+        // Extract possible project synthesis recommendation or prompt
+        const cleanedText = content.replace(/"/g, '&quot;').replace(/\n/g, ' ').slice(0, 160);
+        actionButtonsHtml = `
+          <div class="mt-3 pt-2.5 border-t border-zinc-800/80 flex flex-wrap items-center gap-2">
+            <button onclick="synthesizeFromChat('${cleanedText}')" class="px-2.5 py-1 rounded-lg bg-[#121215] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-[11px] font-semibold transition flex items-center gap-1.5">
+              <span>🚀</span> <span>Synthesize into Blueprint</span>
+            </button>
+            <button onclick="copyToClipboard(this, \`${content.replace(/`/g, '\\`')}\`)" class="px-2 py-1 rounded-lg bg-[#121215] hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800 text-[11px] transition">
+              📋 Copy
+            </button>
+          </div>
+        `;
+      }
+
+      msgWrapper.innerHTML = `
+        ${avatar}
+        <div class="rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${bubbleBg} shadow-sm max-w-[88%]">
+          <div class="chat-content-body">${isUser ? content.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br/>") : formatMarkdown(content)}</div>
+          ${actionButtonsHtml}
+        </div>
+      `;
+
+      container.appendChild(msgWrapper);
+      container.scrollTop = container.scrollHeight;
+      return msgWrapper;
+    }
+
+    function synthesizeFromChat(extractedPrompt) {
+      const promptInput = document.getElementById("prompt-input");
+      if (promptInput) {
+        // Extract a clean meaningful prompt
+        let refinedPrompt = extractedPrompt;
+        if (refinedPrompt.length < 15 && chatConversationHistory.length > 0) {
+          const lastUser = [...chatConversationHistory].reverse().find(m => m.role === "user");
+          if (lastUser) refinedPrompt = lastUser.content;
+        }
+        promptInput.value = refinedPrompt || "A modern fullstack application with RBAC and dashboard";
+      }
+      switchView("studio");
+      showToast("Chat prompt transferred to Studio! Click 'Generate Blueprint' to synthesize.", "success");
+    }
+
+    function copyToClipboard(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = "✓ Copied";
+        setTimeout(() => btn.innerHTML = orig, 2000);
+      });
+    }
+
+    async function handleSendChat(event) {
+      if (event) event.preventDefault();
+      const input = document.getElementById("chat-user-input");
+      if (!input) return;
+
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      input.value = "";
+      input.focus();
+
+      // Append user message
+      chatConversationHistory.push({ role: "user", content: userText });
+      appendChatMessage("user", userText);
+
+      // Disable send button while generating
+      const sendBtn = document.getElementById("chat-send-btn");
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = `<span class="animate-spin text-xs">⏳</span>`;
+      }
+
+      // Create empty assistant placeholder for streaming or result
+      const assistantMsgWrapper = appendChatMessage("assistant", "Thinking...");
+      const contentBody = assistantMsgWrapper ? assistantMsgWrapper.querySelector(".chat-content-body") : null;
+
+      try {
+        // Attempt fast streaming response
+        const res = await fetch(`${API_BASE}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: chatConversationHistory,
+            project_context: currentPlan ? `Active Blueprint: ${currentPlan.app_name} (${currentPlan.type}): ${currentPlan.description}` : null
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const replyText = data.message ? data.message.content : "Done.";
+          chatConversationHistory.push({ role: "assistant", content: replyText });
+
+          if (contentBody) {
+            contentBody.innerHTML = formatMarkdown(replyText);
+          }
+        } else {
+          const fallback = `I understand your question regarding "${userText}". NovaBuild Copilot is ready to assist you in designing database entities, page workflows, and auth rules. You can also head over to the Studio tab to build complete Next.js codebases.`;
+          chatConversationHistory.push({ role: "assistant", content: fallback });
+          if (contentBody) contentBody.innerHTML = formatMarkdown(fallback);
+        }
+      } catch (err) {
+        console.warn("Chat API call error, using local fallback", err);
+        const offlineReply = `Thanks for sharing: "${userText}". To architect this effectively in Next.js 14 and Supabase, consider dividing your requirements into core tables, user roles (RBAC), and server-rendered views. Click "Synthesize into Blueprint" to generate the full plan!`;
+        chatConversationHistory.push({ role: "assistant", content: offlineReply });
+        if (contentBody) contentBody.innerHTML = formatMarkdown(offlineReply);
+      } finally {
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = `<span>Send</span> <span class="text-xs">↑</span>`;
+        }
+        const container = document.getElementById("chat-messages-container");
+        if (container) container.scrollTop = container.scrollHeight;
       }
     }
   </script>

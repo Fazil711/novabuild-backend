@@ -255,4 +255,24 @@ class ReferenceLinkRequest(BaseModel):
 class ReferenceUploadResponse(BaseModel):
     reference: ReferenceItem
     message: str
+
+
+# ---- Casual Chat Schemas ----
+
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant", "system"]
+    content: str
+    timestamp: Optional[str] = None
+
+
+class ChatRequest(BaseModel):
+    messages: List[ChatMessage]
+    system_prompt: Optional[str] = None
+    project_context: Optional[str] = None
+
+
+class ChatResponse(BaseModel):
+    message: ChatMessage
+    suggested_actions: Optional[List[str]] = None
+
 

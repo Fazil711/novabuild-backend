@@ -1,33 +1,44 @@
-/* NovaBuild Custom Styles & Animations */
+/* NovaBuild — Premium Dark Design System */
 
 :root {
-  --primary-glow: rgba(99, 102, 241, 0.15);
+  --bg-base: #09090b;
+  --bg-surface: #121215;
+  --bg-surface-elevated: #18181b;
+  --bg-surface-hover: #202025;
+  --border-subtle: #27272a;
+  --border-muted: #3f3f46;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #71717a;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-subtle: rgba(79, 70, 229, 0.12);
 }
 
-/* Custom Scrollbar */
+/* Custom Clean Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: #09090b;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
-  border-radius: 4px;
+  background: #27272a;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.6);
+  background: #3f3f46;
 }
 
-/* Code Viewer Styling */
+/* Code Viewer & Monospace Styling */
 pre code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.825rem;
+  line-height: 1.65;
 }
 
 .line-numbers {
@@ -37,56 +48,46 @@ pre code {
 .line-numbers > div {
   counter-increment: line;
   position: relative;
-  padding-left: 3.5rem;
+  padding-left: 3.25rem;
 }
 
 .line-numbers > div::before {
   content: counter(line);
   position: absolute;
   left: 0;
-  width: 2.5rem;
+  width: 2.25rem;
   text-align: right;
-  color: #475569;
+  color: #52525b;
   user-select: none;
 }
 
-/* Glow & Glass Effects */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Clean Surface Cards (Replacing cheap transparent glassmorphism) */
+.surface-card {
+  background: #121215;
+  border: 1px solid #27272a;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
 }
 
-.glass-card {
-  background: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.surface-elevated {
+  background: #18181b;
+  border: 1px solid #27272a;
 }
 
-.glass-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+.surface-interactive {
+  background: #121215;
+  border: 1px solid #27272a;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-/* Animated Progress Bar */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
-  }
+.surface-interactive:hover {
+  border-color: #3f3f46;
+  background: #151519;
 }
 
-.pulse-bar {
-  animation: pulse-glow 2s infinite ease-in-out;
-}
-
-/* Toast Animations */
+/* Toast Slide-In Animation */
 @keyframes slide-in-up {
   from {
-    transform: translateY(100%);
+    transform: translateY(16px);
     opacity: 0;
   }
   to {
@@ -96,5 +97,10 @@ pre code {
 }
 
 .toast-animate {
-  animation: slide-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slide-in-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth Transitions */
+button, a, input, textarea, select {
+  transition: all 0.15s ease;
 }

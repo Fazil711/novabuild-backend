@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, plan, build, projects, iterate, discovery, deploy, references
+from app.routers import auth, plan, build, projects, iterate, discovery, deploy, references, chat
 
 app = FastAPI(
     title="NovaBuild Backend",
@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")
 app.include_router(discovery.router, prefix="/api")
 app.include_router(references.router, prefix="/api")
 app.include_router(plan.router, prefix="/api")
